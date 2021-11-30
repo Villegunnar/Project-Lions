@@ -6,6 +6,7 @@ namespace Project_Lions
 {
     static class UserFactory
     {
+        //HÄR LÄGGER VI EN ROLIG KOMMENTAR
         public static List<string> nums = new List<string>();
         public static List<string> uppercase = new List<string>();
         public static List<string> lowercase = new List<string>();

@@ -18,6 +18,11 @@ namespace Project_Lions
         static string passTooShort = "Lösenordet är för kort. Det måste vara minst 8 karaktärer långt.";
         static string passError;
 
+
+        public static void Useless()
+        {
+            Console.WriteLine("öL");
+        }
         static UserFactory()
         {
             uppercase.AddRange("A B C D E F G H I J K L M N O P Q R S T U V W X Y Z Å Ä Ö".Split(" "));

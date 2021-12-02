@@ -6,7 +6,6 @@ namespace Project_Lions
 {
     static class UserFactory
     {
-        //HÄR LÄGGER VI EN ROLIG KOMMENTAR
         public static List<string> nums = new List<string>();
         public static List<string> uppercase = new List<string>();
         public static List<string> lowercase = new List<string>();
@@ -57,7 +56,7 @@ namespace Project_Lions
                 passwordTry = Console.ReadLine();
                 Console.SetCursorPosition(19, 4);
                 passConfTry = Console.ReadLine();
-                if (UsernameIsVacant(usernameTry, System.Allusers))
+                if (UsernameIsVacant(usernameTry, System.AllUsers))
                 {
                     if (passwordTry == passConfTry)
                     {
@@ -72,7 +71,7 @@ namespace Project_Lions
                             else
                             {
                                 Console.Clear();
-                                System.Allusers.Add(new User(usernameTry, passwordTry));
+                                System.AllUsers.Add(new User(usernameTry, passwordTry));
                                 Console.WriteLine("Kontot {0} har skapats!", usernameTry);
                                 Console.ReadLine();
                             }

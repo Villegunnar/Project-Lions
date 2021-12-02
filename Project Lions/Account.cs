@@ -6,13 +6,11 @@ namespace Project_Lions
 {
     public class Account
     {
-        private decimal balance;
-        private string accountName;
-        protected decimal Balance { get => balance; set => balance = value; }
-        protected string Name { get => accountName; set => accountName = value; }
+        public decimal Balance { get; set; }
+        public string Name { get; set; }
         public override string ToString()
         {
-            return $"{accountName}: {balance}";
+            return $"{Name}: {Balance}";
         }
     }
 }

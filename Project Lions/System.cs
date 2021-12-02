@@ -75,15 +75,7 @@ namespace Project_Lions
             PassCheck(usernameInput, passwordInput);
 
         }
-        public static void DisplayAccounts()
-        { }
-        public static void TransferBalance()
-        { }
-        public static void CreateSavingAcc()
-        { }
-        public static void Loan()
-        { }
-        public static void PreviousTransactions()
+
         { }
         public static void PrintMenu()
         {
@@ -108,19 +100,19 @@ namespace Project_Lions
                 switch (menuChoice)
                 {
                     case 1:
-                        DisplayAccounts();
+                        user.DisplayAccounts();
                         break;
                     case 2:
-                        TransferBalance();
+                        user.TransferBalance();
                         break;
                     case 3:
-                        CreateSavingAcc();
+                        user.CreateSavingAcc();
                         break;
                     case 4:
-                        Loan();
+                        user.Loan();
                         break;
                     case 5:
-                        PreviousTransactions();
+                        user.PreviousTransactions();
                         break;
                     case 6:
                         Console.Clear();

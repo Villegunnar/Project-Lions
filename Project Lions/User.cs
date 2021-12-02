@@ -21,5 +21,20 @@ namespace Project_Lions
         {
             return ("Username: " + Username + "Password: " + Password +"    inloggnings försök: " +   LoginCounter);
         }
+
+        public void DisplayAccounts()
+        { }
+
+        public void TransferBalance()
+        { }
+
+        public void CreateSavingAcc()
+        { }
+
+        public void Loan()
+        { }
+
+        public void PreviousTransactions()
+        { }
     }
 }

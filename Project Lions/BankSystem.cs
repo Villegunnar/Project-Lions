@@ -6,13 +6,29 @@ using System.Threading;
 
 namespace Project_Lions
 {
-    public class System
+    public static class BankSystem
     {
 
         public static List<User> AllUsers = new List<User>();
         public static List<Admin> Alladmins = new List<Admin>();
 
-        public System(){}
+
+
+         static BankSystem()
+        {
+            User Viktor = new User("viktor", "viktor123");
+            Viktor.Accounts.AddRange(new List<Account> { new Account { Balance = 100, Name = "Lönekonto", Currency = "SEK" }, new Account { Balance = 2000, Name = "Investeringskoto", Currency = "SEK" } });
+            User Lukas = new User("lukas", "lukas123");
+            Lukas.Accounts.AddRange(new List<Account> { new Account { Balance = 200, Name = "Lönekonto", Currency = "SEK" }, new Account { Balance = 3000, Name = "Ölkonto", Currency = "SEK" } });
+            User Erik = new User("erik", "erik123");
+            Erik.Accounts.AddRange(new List<Account> { new Account { Balance = 300, Name = "Lönekonto", Currency = "SEK" }, new Account { Balance = 1003, Name = "Eventkonto", Currency = "SEK" } });
+            Admin Anas = new Admin("Anas", "Anas123", true);
+            AllUsers.Add(Erik);
+            AllUsers.Add(Viktor);
+            AllUsers.Add(Lukas);
+            AllUsers.Add(Anas);
+
+        }
 
         public static void PassCheck(string userTry, string passTry)
         {
@@ -62,9 +78,11 @@ namespace Project_Lions
 
         public static void LogInMenu()
         {
-            Console.WriteLine("Skriv in användarnamn: ");
+            Console.Clear();
+            Console.WriteLine("Användarnamn: \nLösenord: ");
+            Console.SetCursorPosition(14, 0);
             string usernameInput = Console.ReadLine();
-            Console.WriteLine("Skriv in lösenord: ");
+            Console.SetCursorPosition(10, 1);
             string passwordInput = Console.ReadLine();
 
             PassCheck(usernameInput, passwordInput);
@@ -87,6 +105,7 @@ namespace Project_Lions
             bool loggedIn = true;
             while (loggedIn)
             {
+                Console.Clear();
                 Console.WriteLine($"Välkommen {user.Username}");
                 PrintMenu();
                 int menuChoice;

@@ -59,25 +59,25 @@ namespace Project_Lions
             Console.Write("Ange vilket konto du vill föra över FRÅN: ");
             while (!int.TryParse(Console.ReadLine(), out moveFrom) || moveFrom < 1 || moveFrom > Accounts.Count)
             {
-                System.ClearLine();
+                BankSystem.ClearLine();
                 Console.Write("Ogiltig input. Ange vilket konto du vill föra över FRÅN: ");
             }
             Console.Write("Ange vilket konto du vill föra över TILL: ");
             while (!int.TryParse(Console.ReadLine(), out moveTo) || moveTo < 1 || moveTo > Accounts.Count || moveTo == moveFrom)
             {
-                System.ClearLine();
-                Console.Write("Ogiltig input. Ange med vilket konto du vill föra över TILL: ");
+                BankSystem.ClearLine();
+                Console.Write("Ogiltig input. Ange vilket konto du vill föra över TILL: ");
             }
             Console.Write("Skriv in hur mycket du vill föra över: ");
             while ((!decimal.TryParse(Console.ReadLine(), out amount)) || amount < 0 || amount > Accounts[moveFrom - 1].Balance)
             {
-                System.ClearLine();
+                BankSystem.ClearLine();
                 Console.Write("Ogiltig Input. Skriv in hur mycket du vill föra över: ");
             }
             Accounts[moveFrom - 1].Balance = Accounts[moveFrom - 1].Balance - amount;
             Accounts[moveTo - 1].Balance = Accounts[moveTo - 1].Balance + amount;
             Console.Clear();
-            System.PrintGreen($"Transaktion lyckad!\n\n{amount} {Accounts[moveFrom - 1].Currency} fördes över från {Accounts[moveFrom - 1].Name} till {Accounts[moveTo - 1].Name}\n");
+            BankSystem.PrintGreen($"Transaktion lyckad!\n\n{amount} {Accounts[moveFrom - 1].Currency} fördes över från {Accounts[moveFrom - 1].Name} till {Accounts[moveTo - 1].Name}\n");
             Log.Add($"{DateTime.Now} {amount} {Accounts[moveFrom - 1].Currency} fördes över från {Accounts[moveFrom - 1].Name} till {Accounts[moveTo - 1].Name}");
             Console.WriteLine("Tryck Enter för att återgå till huvudmenyn.");
             Console.ReadLine();
@@ -105,11 +105,11 @@ namespace Project_Lions
                     Console.WriteLine("Namn på ditt nya sparkonto: ");
                     string saveAccountName = Console.ReadLine();
 
-                    decimal tempInterest = 1.06m;
+                    decimal tempInterest = 1.006m;
                     Console.Clear();
                     Console.WriteLine("Beräkna räntan");
                     Console.WriteLine();
-                    Console.WriteLine("Här kan du se hur mycket ränta du kommer\nfå på ditt sparkonto, välj ett av alternativen nedan: ");
+                    Console.WriteLine("Här kan du se hur mycket ränta du kan \nfå på ditt sparkonto, välj ett av alternativen nedan: ");
                     Console.WriteLine();
                     Console.WriteLine("[1] Fasträntekonto, 1,10 % ränta årsbasis, bindningstid 1år . ");
                     Console.WriteLine("[2] Fasträntekonto, 1,40 % ränta årsbasis, bindningstid 2år. ");
@@ -130,7 +130,7 @@ namespace Project_Lions
 
                             Accounts.Add(new Account { Balance = 0, Name = saveAccountName, Currency = "SEK", Interest = 0 });
 
-                            Console.WriteLine($"På 1 år kommer dina: {saveAccAmount} att bli {saveAccAmount * 1.01m} kr");
+                            Console.WriteLine($"På 1 år kommer dina: {saveAccAmount} att bli {saveAccAmount * 1.011m} kr");
 
 
                             break;
@@ -152,15 +152,12 @@ namespace Project_Lions
 
                             Accounts.Add(new Account { Balance = 0, Name = saveAccountName, Currency = "SEK", Interest = 0 });
 
-                            Console.WriteLine($"På 1 år kommer dina {saveAccAmount} att bli {(saveAccAmount * tempInterest) * tempInterest} kr");
+                            Console.WriteLine($"På 1 år kommer dina {saveAccAmount} att bli {saveAccAmount * tempInterest } kr");
 
                             break;
                         default:
                             break;
                     }
-
-
-
 
 
                     break;
@@ -174,9 +171,6 @@ namespace Project_Lions
             Console.WriteLine("Tryck enter för att återgå till huvudmenyn:");
             Console.ReadKey();
             Console.Clear();
-
-
-
 
         }
 
@@ -198,7 +192,7 @@ namespace Project_Lions
             {
                 Console.WriteLine("Du har för lite pengar för att ta detta lån.");
                 Console.WriteLine("Vänligen kontakta vår personal för att se över dina möjligheter");
-                System.Return();
+                BankSystem.Return();
             }
             else
             {
@@ -234,7 +228,7 @@ namespace Project_Lions
                         {
                             Console.WriteLine("Grattis till ditt lån.");
                             LoanSum = LoanSum + total;
-                            System.Return();
+                            BankSystem.Return();
                             loanCon = false;
                         }
                         else if (pass.ToUpper() == "Q")
@@ -260,7 +254,7 @@ namespace Project_Lions
             {
                 Console.WriteLine(item);
             }
-            System.Return();
+            BankSystem.Return();
         }
 
 

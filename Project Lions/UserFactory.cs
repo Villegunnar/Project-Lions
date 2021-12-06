@@ -27,7 +27,7 @@ namespace Project_Lions
             notChar.AddRange(nums);
         }
 
-        public static void CreateNewUser(System bank)
+        public static void CreateNewUser()
         {
             bool success = false;
             string usernameTry;
@@ -56,7 +56,7 @@ namespace Project_Lions
                 passwordTry = Console.ReadLine();
                 Console.SetCursorPosition(19, 4);
                 passConfTry = Console.ReadLine();
-                if (UsernameIsVacant(usernameTry, System.AllUsers))
+                if (UsernameIsVacant(usernameTry, BankSystem.AllUsers))
                 {
                     if (passwordTry == passConfTry)
                     {
@@ -71,7 +71,7 @@ namespace Project_Lions
                             else
                             {
                                 Console.Clear();
-                                System.AllUsers.Add(new User(usernameTry, passwordTry));
+                                BankSystem.AllUsers.Add(new User(usernameTry, passwordTry));
                                 Console.WriteLine("Kontot {0} har skapats!", usernameTry);
                                 Console.ReadLine();
                             }

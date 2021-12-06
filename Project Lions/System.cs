@@ -59,12 +59,7 @@ namespace Project_Lions
             Console.WriteLine();
             Environment.Exit(0);
         }
-        //public static void ReturnToMenu()
-        //{
-        //    Console.Write("Tryck <Q> för att återgå till huvudmenyn");
-        //    Console.WriteLine();
-        //    while (Console.ReadKey().Key != ConsoleKey.Q) { }
-        //}
+
         public static void LogInMenu()
         {
             Console.WriteLine("Skriv in användarnamn: ");
@@ -76,15 +71,15 @@ namespace Project_Lions
 
         }
 
-        { }
+        
         public static void PrintMenu()
         {
             Console.WriteLine();
             Console.WriteLine("[1] Se dina konton och saldo");
             Console.WriteLine("[2] Överföring mellan konton");
-            Console.WriteLine("[3] skapa sparkonto");
-            Console.WriteLine("[4] lån");
-            Console.WriteLine("[5] tidigare överföringar");
+            Console.WriteLine("[3] Skapa nytt konto");
+            Console.WriteLine("[4] Lån");
+            Console.WriteLine("[5] Tidigare överföringar");
             Console.WriteLine("[6] Logga ut");
         }
         public static void MainMenu(User user)
@@ -106,13 +101,13 @@ namespace Project_Lions
                         user.TransferBalance();
                         break;
                     case 3:
-                        user.CreateSavingAcc();
+                        user.OpenNewBankAccount();
                         break;
                     case 4:
-                        user.Loan();
+                        user.Loans();
                         break;
                     case 5:
-                        user.PreviousTransactions();
+                        user.PrintLog();
                         break;
                     case 6:
                         Console.Clear();
@@ -126,18 +121,62 @@ namespace Project_Lions
                         loggedIn = false;
                         break;
                     default:
-                        Console.WriteLine("Not valid option");
+                        Console.WriteLine("Ogiltigt alternativ");
                         return;
                 }
             }
         }
         public static void Init()
         {
-            bool keepRunning = true;
-            while (keepRunning)
+            bool loop = true;
+            int selector;
+            while (loop)
             {
-                LogInMenu();
+                do
+                {
+                    Console.Clear();
+                    Console.WriteLine("------LION BANK INC------");
+                    Console.WriteLine();
+                    Console.WriteLine("[1]. Logga In");
+                    Console.WriteLine("[2]. Avsluta");
+                } while ((!int.TryParse(Console.ReadLine(), out selector)) && selector != 1 && selector != 2);
+                if (selector == 1)
+                {
+                    {
+                        LogInMenu();
+                    }
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.Write("Programmet stängs ner");
+                    for (int j = 0; j < 10; j++)
+                    {
+                        Console.Write(".");
+                        Thread.Sleep(200);
+                    }
+                    Console.WriteLine();
+                    loop = false;
+                }
             }
+        }
+        public static void ClearLine()
+        {
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            Console.Write(new String(' ', Console.WindowWidth));
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+        }
+        public static void PrintGreen(string input)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(input);
+            Console.ResetColor();
+        }
+        public static void Return()
+        {
+            Console.WriteLine("\nTryck Enter för att återgå till huvudmenyn");
+            Console.ReadLine();
+            Console.Clear();
         }
 
     }

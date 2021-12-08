@@ -23,7 +23,7 @@ namespace Project_Lions
             AllUsers.Add(Lukas);
             AllUsers.Add(Anas);
         }
-        public static void PassCheck(string userTry, string passTry)
+        public static bool PassCheck(string userTry, string passTry)
         {
             foreach (User user in AllUsers)
             {
@@ -39,29 +39,37 @@ namespace Project_Lions
                             if (user.IsAdmin)
                             {
                                 AdminMenu(user);
+                                return true;
                             }
                             else
                             {
                                 MainMenu(user);
+                                return true;
                             }
                         }
                         else
                         {
-                            Console.WriteLine("Felaktigt lösenord.");
                             user.LoginCounter++;
                             if (user.LoginCounter > 2)
                             {
-                                Console.WriteLine("Denna användare är nu låst");
+                                Console.Clear();
+                                PrintRed($"Kontot {user.Username} är nu låst");                                
+                                Return();
                                 user.LockedOut = true;
                             }
+                            return false;
                         }
                     }
                     else
                     {
-                        Console.WriteLine("Denna användare är låst.");
+                        Console.Clear();
+                        PrintRed($"Kontot {user.Username} är låst");
+                        Return();
+                        return false;
                     }
                 }
             }
+            return false;
         }
         public static void ExitAppFunc()
         {
@@ -77,13 +85,94 @@ namespace Project_Lions
         }
         public static void LogInMenu()
         {
-            Console.Clear();
-            Console.WriteLine("Användarnamn: \nLösenord: ");
-            Console.SetCursorPosition(14, 0);
-            string usernameInput = Console.ReadLine();
-            Console.SetCursorPosition(10, 1);
-            string passwordInput = Console.ReadLine();
-            PassCheck(usernameInput, passwordInput);
+            bool loginSuccess = false;
+            int tries = 0;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("Användarnamn: \nLösenord: \n\nTryck Escape för att återgå");
+                if (tries > 0)
+                {
+                    Console.SetCursorPosition(0, 2);
+                    BankSystem.PrintRed("Felaktigt lösenord eller användarnamn.");
+                }
+                Console.SetCursorPosition(14, 0);
+                string usernameInput = ShowInput();
+                if (usernameInput.ToUpper() == "ESC")
+                {
+                    break;
+                }
+                Console.SetCursorPosition(10, 1);
+                string passwordInput = HideInput();
+                if (passwordInput.ToUpper() == "ESC")
+                {
+                    break;
+                }
+
+
+
+                loginSuccess = PassCheck(usernameInput, passwordInput);
+                tries++;
+            } while (!loginSuccess);
+
+        }
+        public static string HideInput()
+        {
+            ConsoleKey key;
+            string pass = "";
+            do
+            {
+                var keyInfo = Console.ReadKey(intercept: true);
+                key = keyInfo.Key;
+                if (key == ConsoleKey.Escape)
+                {
+                    return "ESC";
+                }
+                if (key == ConsoleKey.Backspace && pass.Length > 0)
+                {
+                    Console.Write("\b \b");
+                    pass = pass[0..^1];
+                }
+                else if (!char.IsControl(keyInfo.KeyChar))
+                {
+                    Console.Write("*");
+                    pass += keyInfo.KeyChar;
+                }
+            } while (key != ConsoleKey.Enter);
+            Console.WriteLine();
+            return pass;
+        }
+        public static string ShowInput()
+        {
+            ConsoleKey key;
+            string username = "";
+            do
+            {
+                var keyInfo = Console.ReadKey(intercept: true);
+                key = keyInfo.Key;
+
+
+
+                if (key == ConsoleKey.Escape)
+                {
+                    return "ESC";
+                }
+
+
+
+                if (key == ConsoleKey.Backspace && username.Length > 0)
+                {
+                    Console.Write("\b \b");
+                    username = username[0..^1];
+                }
+                else if (!char.IsControl(keyInfo.KeyChar))
+                {
+                    Console.Write(keyInfo.KeyChar);
+                    username += keyInfo.KeyChar;
+                }
+            } while (key != ConsoleKey.Enter);
+            Console.WriteLine();
+            return username;
         }
         public static void PrintMenu()
         {
@@ -194,10 +283,16 @@ namespace Project_Lions
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(input);
             Console.ResetColor();
+        } 
+        public static void PrintRed(string input)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(input);
+            Console.ResetColor();
         }
         public static void Return()
         {
-            Console.WriteLine("\nTryck Enter för att återgå till huvudmenyn");
+            Console.WriteLine("\nTryck Enter för att återgå");
             Console.ReadLine();
             Console.Clear();
         }
@@ -244,11 +339,11 @@ namespace Project_Lions
             }
             return 0;
         }
-        public static void ChechInterest()
+        public static void CheckInterest()
         {
-            decimal variableInterestRate = 0.006m;
-            decimal fixedInterestRateOne = 0.011m;
-            decimal FixedInterestRateTwo = 0.014m;
+            decimal varIntRate = 0.006m;
+            decimal fixIntRate1 = 0.011m;
+            decimal fixIntRate2 = 0.014m;
             Console.Clear();
             Console.WriteLine("Beräkna ränta på ett sparkonto");
             Console.WriteLine();
@@ -266,13 +361,13 @@ namespace Project_Lions
                 BankSystem.ClearLine();
                 Console.Write("Exempel på hur många år du kommer att spara: ");
             }
-            Console.WriteLine();
+            Console.Clear();
             Console.WriteLine("[1] Fasträntekonto, 1,10 % ränta årsbasis, bindningstid 1år" +
-                $"\nPå {numberOfYears} år kommer dina: {saveAccAmount}kr att bli {CalcInterest(fixedInterestRateOne, numberOfYears, saveAccAmount)} kr" +
-                            "\n[2] Fasträntekonto, 1,40 % ränta årsbasis, bindningstid 2år." +
-                            $"\nPå {numberOfYears} år kommer dina: {saveAccAmount}kr att bli {CalcInterest(FixedInterestRateTwo, numberOfYears, saveAccAmount)} kr" +
-                            "\n[3] Rörligträntekonto, aktuellränta: 0,60 % årsbasis, ingen bindningstid" +
-                $"\nPå {numberOfYears} år kommer dina: {saveAccAmount}kr att bli {CalcInterest(variableInterestRate, numberOfYears, saveAccAmount)} kr");
+                $"\nPå {numberOfYears} år kommer dina: {saveAccAmount}kr att bli {CalcInterest(fixIntRate1, numberOfYears, saveAccAmount)} kr" +
+                            "\n\n[2] Fasträntekonto, 1,40 % ränta årsbasis, bindningstid 2år." +
+                            $"\nPå {numberOfYears} år kommer dina: {saveAccAmount}kr att bli {CalcInterest(fixIntRate2, numberOfYears, saveAccAmount)} kr" +
+                            "\n\n[3] Rörligträntekonto, aktuellränta: 0,60 % årsbasis, ingen bindningstid" +
+                $"\nPå {numberOfYears} år kommer dina: {saveAccAmount}kr att bli {CalcInterest(varIntRate, numberOfYears, saveAccAmount)} kr");
         }
         public static decimal CalcInterest(decimal rate, int years, decimal sum)
         {
@@ -303,6 +398,7 @@ namespace Project_Lions
                 default:
                     return "";
             }
+
         }
     }
 }

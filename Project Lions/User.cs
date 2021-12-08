@@ -49,6 +49,7 @@ namespace Project_Lions
             bool transfer = true;
             while (transfer)
             {
+                Console.Clear();
                 Console.WriteLine("[1] Överföring mellan egna konton");
                 Console.WriteLine("[2] Överföring till andra kunder i Lion Bank INC");
                 int transferTo;
@@ -145,8 +146,8 @@ namespace Project_Lions
                                 }
                                 else
                                 {
-                                    BankSystem.AllUsers[index].Accounts[0].Balance = +BankSystem.CurrencyConverter(Accounts[moveFrom - 1].Currency, BankSystem.AllUsers[index].Accounts[0].Currency, transferMoney);
-                                    Accounts[moveFrom - 1].Balance = -transferMoney;
+                                    BankSystem.AllUsers[index].Accounts[0].Balance += BankSystem.CurrencyConverter(Accounts[moveFrom - 1].Currency, BankSystem.AllUsers[index].Accounts[0].Currency, transferMoney);
+                                    Accounts[moveFrom - 1].Balance -= transferMoney;
                                 }
                                 Console.WriteLine(transferMoney + " " + Accounts[moveFrom - 1].Currency + " fördes över till " + BankSystem.AllUsers[index].Username);
                                 transfer = false;
@@ -184,6 +185,7 @@ namespace Project_Lions
             switch (createAccChoice)
             {
                 case 1:
+                    Console.Clear();
                     Console.WriteLine("Namn på ditt nya konto: ");
                     string regAccountName = Console.ReadLine();
                     Console.Clear();
@@ -222,21 +224,19 @@ namespace Project_Lions
                     string saveAccountName = Console.ReadLine();
                     Console.Clear();
                     Accounts.Add(new Account { Balance = 0, Name = saveAccountName, Currency = BankSystem.ChooseCurrency(), Interest = tempInterest });
+                    Console.Clear();
                     Console.WriteLine("Nytt konto " + saveAccountName + " skapat!");
                     Log.Add($"{DateTime.Now} Sparkontot {saveAccountName} skapades, som håller valutan {Accounts[Accounts.Count - 1].Currency} och har en ränta på {decimal.Round((tempInterest * 100), 2)}%");
                     break;
                 case 3:
-                    BankSystem.ChechInterest();
+                    BankSystem.CheckInterest();
                     break;
                 default:
                     Console.WriteLine("Ogiltigt alternativ");
                     Console.ReadLine();
                     return;
             }
-            Console.WriteLine();
-            Console.WriteLine("Tryck enter för att återgå till huvudmenyn:");
-            Console.ReadKey();
-            Console.Clear();
+            BankSystem.Return();
         }
         public void Loans()
         {
@@ -248,12 +248,14 @@ namespace Project_Lions
             decimal accountSum = 0;
             Console.Write("Skriv in hur mycket du vill låna: ");
             decimal.TryParse(Console.ReadLine(), out LoanInput);
+            Console.Clear();
             foreach (Account u in Accounts)
             {
                 accountSum = accountSum + u.Balance;
             }
             if (accountSum * 5 < LoanInput + LoanSum)
             {
+                Console.Clear();
                 Console.WriteLine("Du har för lite pengar för att ta detta lån.");
                 Console.WriteLine("Vänligen kontakta vår personal för att se över dina möjligheter");
                 BankSystem.Return();
@@ -278,7 +280,7 @@ namespace Project_Lions
                     intresteamount = 1.5m;
                     total = LoanInput * IntrestCal;
                 }
-                Console.WriteLine("\nDin totala kostnad för ett lån på " + LoanInput + " blir " + total);
+                Console.WriteLine("Din totala kostnad för ett lån på " + LoanInput + " blir " + total);
                 Console.WriteLine("Du har då en ränta på " + intresteamount + "%\n");
                 bool loanCon = true;
                 while (loanCon)
@@ -287,11 +289,13 @@ namespace Project_Lions
                     {
                         Console.WriteLine("För att bekräfta ett nytt lån på " + total + " skriv in ditt lösenord: ");
                         Console.WriteLine("För att avbryta tryck [Q]");
-                        string pass = Console.ReadLine();
+                        string pass = BankSystem.HideInput();
                         if (pass == Password)
                         {
+                            Console.Clear();
                             Console.WriteLine("Grattis till ditt lån.");
                             LoanSum = LoanSum + total;
+                            Log.Add($"{DateTime.Now} Ett lån togs på {total} SEK. Din totala lånsumma blev då {LoanSum} SEK");
                             BankSystem.Return();
                             loanCon = false;
                         }
@@ -312,10 +316,17 @@ namespace Project_Lions
         public void PrintLog()
         {
             Console.Clear();
-            Console.WriteLine("Alla föregående transaktioner, senaste till första:\n");
-            foreach (string item in Log)
+            if (Log.Count > 0)
             {
-                Console.WriteLine(item);
+                Console.WriteLine("Alla föregående transaktioner, senaste till första:\n");
+                for (int i = Log.Count - 1; i >= 0; i--)
+                {
+                    Console.WriteLine(Log[i]);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Du har inte utfört några handlingar på denna Användare.");
             }
             BankSystem.Return();
         }

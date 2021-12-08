@@ -16,7 +16,6 @@ namespace Project_Lions
         static string passDontMatch = "Lösenordsfälten matchar inte. Försök igen.";
         static string passTooShort = "Lösenordet är för kort. Det måste vara minst 8 karaktärer långt.";
         static string passError;
-
         static UserFactory()
         {
             uppercase.AddRange("A B C D E F G H I J K L M N O P Q R S T U V W X Y Z Å Ä Ö".Split(" "));
@@ -26,7 +25,6 @@ namespace Project_Lions
             notChar.AddRange(uppercase);
             notChar.AddRange(nums);
         }
-
         public static void CreateNewUser()
         {
             bool success = false;
@@ -34,7 +32,6 @@ namespace Project_Lions
             string passwordTry;
             string passConfTry;
             bool fail = false;
-
             while (!success)
             {
                 Console.Clear();
@@ -49,7 +46,6 @@ namespace Project_Lions
                     Console.Write(passError);
                     Console.ResetColor();
                 }
-
                 Console.SetCursorPosition(14, 2);
                 usernameTry = Console.ReadLine().Trim();
                 Console.SetCursorPosition(10, 3);
@@ -100,7 +96,6 @@ namespace Project_Lions
             bool upper = StringMatch(uppercase, thisPassword);
             bool lower = StringMatch(lowercase, thisPassword);
             bool num = StringMatch(nums, thisPassword);
-
             bool chara = false;
             bool match = false;
             foreach (char c in thisPassword)
@@ -114,7 +109,6 @@ namespace Project_Lions
                 }
                 match = false;
             }
-
             if (upper && lower && num && chara)
             {
                 return true;

@@ -108,13 +108,9 @@ namespace Project_Lions
                 {
                     break;
                 }
-
-
-
                 loginSuccess = PassCheck(usernameInput, passwordInput);
                 tries++;
             } while (!loginSuccess);
-
         }
         public static string HideInput()
         {
@@ -184,15 +180,50 @@ namespace Project_Lions
             Console.WriteLine("[5] Tidigare överföringar");
             Console.WriteLine("[6] Logga ut");
         }
-        public static void AdminMenu(User admin)
+        public static void AdminMenu(User admin)//ej klar
         {
-            Console.WriteLine("Välkommen " + admin.Username);
-            Console.WriteLine();
-            Console.WriteLine("[1] Se alla kunder");
-            Console.WriteLine("[2] Registrera ny kund");
-            Console.WriteLine("[3] Ändra valutakurs");
-            Console.WriteLine("[6] Logga ut");
-            Console.ReadKey();
+            bool adminLoggedin = true;
+            while (adminLoggedin)
+            {
+                Console.WriteLine("Välkommen " + admin.Username);
+                Console.WriteLine("Inloggad som admin");
+                Console.WriteLine();
+                Console.WriteLine("[1] Se alla kunder");
+                Console.WriteLine("[2] Registrera ny kund");
+                Console.WriteLine("[3] Ändra valutakurs");
+                Console.WriteLine("[4] Logga ut");
+                int adminmenu;
+                int.TryParse(Console.ReadLine(), out adminmenu);
+                switch (adminmenu)
+                {
+                    case 1:
+                        foreach (User allusers in BankSystem.AllUsers)
+                        {
+                            Console.WriteLine(allusers);
+                        }
+                        break;
+                    case 2:
+                        UserFactory.CreateNewUser();
+                        break;
+                    case 3:
+                        Console.WriteLine("ändra valutakurs");
+                        break;
+                    case 4:
+                        Console.Clear();
+                        Console.Write("Du loggas ut");
+                        for (int j = 0; j < 10; j++)
+                        {
+                            Console.Write(".");
+                            Thread.Sleep(200);
+                        }
+                        Console.WriteLine();
+                        adminLoggedin = false;
+                        break;
+                    default:
+                        Console.WriteLine("Ogiltigt alternativ");
+                        return;
+                }
+            }
         }
         public static void MainMenu(User user)
         {
@@ -202,26 +233,33 @@ namespace Project_Lions
                 Console.Clear();
                 Console.WriteLine($"Välkommen {user.Username}");
                 PrintMenu();
-                int menuChoice;
-                int.TryParse(Console.ReadLine(), out menuChoice);
+                var keyInfo = Console.ReadKey(intercept: true);
+                ConsoleKey menuChoice = keyInfo.Key;
                 switch (menuChoice)
                 {
-                    case 1:
+                    case ConsoleKey.NumPad1:
+                    case ConsoleKey.D1:
                         user.DisplayAccounts();
                         break;
-                    case 2:
+                    case ConsoleKey.NumPad2:
+                    case ConsoleKey.D2:
                         user.TransferBalance();
                         break;
-                    case 3:
+                    case ConsoleKey.NumPad3:
+                    case ConsoleKey.D3:
                         user.OpenNewBankAccount();
                         break;
-                    case 4:
+                    case ConsoleKey.NumPad4:
+                    case ConsoleKey.D4:
                         user.Loans();
                         break;
-                    case 5:
+                    case ConsoleKey.NumPad5:
+                    case ConsoleKey.D5:
                         user.PrintLog();
                         break;
-                    case 6:
+                    case ConsoleKey.NumPad6:
+                    case ConsoleKey.D6:
+                    case ConsoleKey.Escape:
                         Console.Clear();
                         Console.Write("Du loggas ut");
                         for (int j = 0; j < 10; j++)
@@ -233,15 +271,14 @@ namespace Project_Lions
                         loggedIn = false;
                         break;
                     default:
-                        Console.WriteLine("Ogiltigt alternativ");
-                        return;
+                        break;
                 }
             }
         }
         public static void Init()
         {
             bool loop = true;
-            int selector;
+            ConsoleKey selector;
             while (loop)
             {
                 do
@@ -251,8 +288,10 @@ namespace Project_Lions
                     Console.WriteLine();
                     Console.WriteLine("[1]. Logga In");
                     Console.WriteLine("[2]. Avsluta");
-                } while ((!int.TryParse(Console.ReadLine(), out selector)) && selector != 1 && selector != 2);
-                if (selector == 1)
+                    var keyInfo = Console.ReadKey(intercept: true);
+                    selector = keyInfo.Key;
+                } while (selector != ConsoleKey.NumPad1 && selector != ConsoleKey.NumPad2 && selector != ConsoleKey.D1 && selector != ConsoleKey.D2);
+                if (selector == ConsoleKey.NumPad1 || selector == ConsoleKey.D1)
                 {
                     {
                         LogInMenu();

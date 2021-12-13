@@ -52,122 +52,21 @@ namespace Project_Lions
                 Console.Clear();
                 Console.WriteLine("[1] Överföring mellan egna konton");
                 Console.WriteLine("[2] Överföring till andra kunder i Lion Bank INC");
-                int transferTo;
-                int.TryParse(Console.ReadLine(), out transferTo);
-                if (transferTo == 1)
+                var keyInfo = Console.ReadKey(intercept: true);
+                ConsoleKey transferTo = keyInfo.Key;
+                if (transferTo == ConsoleKey.D1 || transferTo == ConsoleKey.NumPad1)
                 {
-                    int moveFrom, moveTo;
-                    decimal amount;
-                    Console.Clear();
-                    Console.WriteLine("Dina konton:\n");
-                    for (int i = 0; i < Accounts.Count; i++)
-                    {
-                        Console.WriteLine($"[{i + 1}] {Accounts[i]}");
-                    }
-                    Console.WriteLine();
-                    Console.Write("Ange vilket konto du vill föra över FRÅN: ");
-                    while (!int.TryParse(Console.ReadLine(), out moveFrom) || moveFrom < 1 || moveFrom > Accounts.Count)
-                    {
-                        BankSystem.ClearLine();
-                        Console.Write("Ogiltig input. Ange vilket konto du vill föra över FRÅN: ");
-                    }
-                    Console.Write("Ange vilket konto du vill föra över TILL: ");
-                    while (!int.TryParse(Console.ReadLine(), out moveTo) || moveTo < 1 || moveTo > Accounts.Count || moveTo == moveFrom)
-                    {
-                        BankSystem.ClearLine();
-                        Console.Write("Ogiltig input. Ange med vilket konto du vill föra över TILL: ");
-                    }
-                    Console.Write("Skriv in hur mycket du vill föra över: ");
-                    while ((!decimal.TryParse(Console.ReadLine(), out amount)) || amount < 0 || amount > Accounts[moveFrom - 1].Balance)
-                    {
-                        BankSystem.ClearLine();
-                        Console.Write("Ogiltig Input. Skriv in hur mycket du vill föra över: ");
-                    }
-                    if (Accounts[moveTo - 1].Currency == Accounts[moveFrom - 1].Currency)
-                    {
-                        Accounts[moveFrom - 1].Balance = Accounts[moveFrom - 1].Balance - amount;
-                        Accounts[moveTo - 1].Balance = Accounts[moveTo - 1].Balance + amount;
-                    }
-                    else
-                    {
-                        Accounts[moveTo - 1].Balance += BankSystem.CurrencyConverter(Accounts[moveFrom - 1].Currency, Accounts[moveTo - 1].Currency, amount);
-                        Accounts[moveFrom - 1].Balance -= amount;
-                    }
-                    Console.Clear();
-                    BankSystem.PrintGreen($"Transaktion lyckad!\n\n{amount} {Accounts[moveFrom - 1].Currency} fördes över från {Accounts[moveFrom - 1].Name} till {Accounts[moveTo - 1].Name}\n");
-                    Log.Add($"{DateTime.Now} {amount} {Accounts[moveFrom - 1].Currency} fördes över från {Accounts[moveFrom - 1].Name} till {Accounts[moveTo - 1].Name}");
-                    Console.WriteLine("Tryck Enter för att återgå till huvudmenyn.");
+                    InternalTransfer();
                     transfer = false;
-                    Console.ReadLine();
-                    Console.Clear();
+                    BankSystem.Return();
                 }
-                else if (transferTo == 2)
+                else if (transferTo == ConsoleKey.D2 || transferTo == ConsoleKey.NumPad2)
                 {
-                    decimal transferMoney = 0;
-                    Console.WriteLine("Sök på det användarnamnet du vill föra över till.");
-                    string usernameSearch = Console.ReadLine();
-                    bool notEnoughMoney = true;
-                    bool userFound = false;
-                    int index = -1;
-                    for (int i = 0; i < BankSystem.AllUsers.Count; i++)
-                    {
-                        if (BankSystem.AllUsers[i].Username == usernameSearch)
-                        {
-                            userFound = true;
-                            index = i;
-                            break;
-                        }
-                    }
-                    if (userFound)
-                    {
-                        int moveFrom;
-                        Console.Clear();
-                        Console.WriteLine("Användare hittad.");
-                        while (notEnoughMoney)
-                        {
-                            for (int i = 0; i < Accounts.Count; i++)
-                            {
-                                Console.WriteLine($"[{i + 1}] {Accounts[i]}");
-                            }
-                            Console.Write("Ange vilket konto du vill föra över FRÅN: ");
-                            while (!int.TryParse(Console.ReadLine(), out moveFrom) || moveFrom < 1 || moveFrom > Accounts.Count)
-                            {
-                                BankSystem.ClearLine();
-                                Console.Write("Ogiltig input. Ange vilket konto du vill föra över FRÅN: ");
-                            }
-                            Console.WriteLine("Hur mycket pengar vill du för över?");
-                            decimal.TryParse(Console.ReadLine(), out transferMoney);
-                            if (Accounts[moveFrom - 1].Balance >= transferMoney)
-                            {
-                                if (BankSystem.AllUsers[index].Accounts[0].Currency == Accounts[moveFrom - 1].Currency)
-                                {
-                                    BankSystem.AllUsers[index].Accounts[0].Balance += transferMoney;
-                                    Accounts[moveFrom - 1].Balance -= transferMoney;
-                                }
-                                else
-                                {
-                                    BankSystem.AllUsers[index].Accounts[0].Balance += BankSystem.CurrencyConverter(Accounts[moveFrom - 1].Currency, BankSystem.AllUsers[index].Accounts[0].Currency, transferMoney);
-                                    Accounts[moveFrom - 1].Balance -= transferMoney;
-                                }
-                                Console.WriteLine(transferMoney + " " + Accounts[moveFrom - 1].Currency + " fördes över till " + BankSystem.AllUsers[index].Username);
-                                transfer = false;
-                                notEnoughMoney = false;
-                                Log.Add($"{DateTime.Now} {transferMoney} fördes över till {BankSystem.AllUsers[index].Username}");
-                                BankSystem.Return();
-                            }
-                            else
-                            {
-                                Console.Clear();
-                                Console.WriteLine("Du har för lite pengar");
-                                notEnoughMoney = true;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Console.Clear();
-                        Console.WriteLine("användare ej hittad");
-                    }
+                    transfer = ExternalTransfer();
+                }
+                else if (transferTo == ConsoleKey.Escape)
+                {
+                    break;
                 }
                 else
                 {
@@ -175,6 +74,142 @@ namespace Project_Lions
                     Console.WriteLine("Ogiltigt alternativ");
                 }
             }
+        }
+        public void InternalTransfer()
+        {
+            int moveFrom = 0, moveTo = 0;
+            decimal amount;
+            Console.Clear();
+            Console.WriteLine("Dina konton:\n");
+            for (int i = 0; i < Accounts.Count; i++)
+            {
+                Console.WriteLine($"[{i + 1}] {Accounts[i]}");
+            }
+            Console.WriteLine();
+            Console.Write("Ange vilket konto du vill föra över FRÅN: ");
+            while (!(moveFrom <= Accounts.Count) || moveFrom < 1)
+            {
+                var keyInfo = Console.ReadKey(intercept: true);
+                if (char.IsDigit(keyInfo.KeyChar))
+                {
+                    if (int.Parse(keyInfo.KeyChar.ToString()) <= Accounts.Count && int.Parse(keyInfo.KeyChar.ToString()) > 0)
+                    {
+                        moveFrom = int.Parse(keyInfo.KeyChar.ToString());
+                        Console.WriteLine(Accounts[moveFrom - 1].Name);
+                    }
+                }
+            }
+            Console.Write("Ange vilket konto du vill föra över TILL: ");
+            while (!(moveTo <= Accounts.Count) || moveTo < 1 || moveTo == moveFrom)
+            {
+                var keyInfo = Console.ReadKey(intercept: true);
+                if (char.IsDigit(keyInfo.KeyChar))
+                {
+                    if (int.Parse(keyInfo.KeyChar.ToString()) <= Accounts.Count && int.Parse(keyInfo.KeyChar.ToString()) > 0 && int.Parse(keyInfo.KeyChar.ToString()) != moveFrom)
+                    {
+                        moveTo = int.Parse(keyInfo.KeyChar.ToString());
+                        Console.WriteLine(Accounts[moveTo - 1].Name);
+                    }
+                }
+            }
+            Console.Write("Skriv in hur mycket du vill föra över och tryck Enter: ");
+            while ((!decimal.TryParse(Console.ReadLine(), out amount)) || amount < 0 || amount > Accounts[moveFrom - 1].Balance)
+            {
+                BankSystem.ClearLine();
+                Console.Write("Ogiltig Input. Skriv in hur mycket du vill föra över: ");
+            }
+            if (Accounts[moveTo - 1].Currency == Accounts[moveFrom - 1].Currency)
+            {
+                Accounts[moveFrom - 1].Balance = Accounts[moveFrom - 1].Balance - amount;
+                Accounts[moveTo - 1].Balance = Accounts[moveTo - 1].Balance + amount;
+            }
+            else
+            {
+                Accounts[moveTo - 1].Balance += BankSystem.CurrencyConverter(Accounts[moveFrom - 1].Currency, Accounts[moveTo - 1].Currency, amount);
+                Accounts[moveFrom - 1].Balance -= amount;
+            }
+            Console.Clear();
+            BankSystem.PrintGreen($"Transaktion lyckad!\n\n{amount} {Accounts[moveFrom - 1].Currency} fördes över från {Accounts[moveFrom - 1].Name} till {Accounts[moveTo - 1].Name}");
+            Log.Add($"{DateTime.Now} \n{amount} {Accounts[moveFrom - 1].Currency} fördes över från {Accounts[moveFrom - 1].Name} till {Accounts[moveTo - 1].Name}\n");
+        }
+        public bool ExternalTransfer()
+        {
+            Console.Clear();
+            decimal transferMoney = 0;
+            Console.Write("Skriv in användaren du vill föra över till: ");
+            string usernameSearch = Console.ReadLine();
+            bool notEnoughMoney = true;
+            bool userFound = false;
+            int index = -1;
+            for (int i = 0; i < BankSystem.AllUsers.Count; i++)
+            {
+                if (BankSystem.AllUsers[i].Username == usernameSearch)
+                {
+                    userFound = true;
+                    index = i;
+                    break;
+                }
+            }
+            if (userFound)
+            {
+                int moveFrom = 0;
+                Console.Clear();
+                Console.WriteLine("Användare hittad!\n");
+                while (notEnoughMoney)
+                {
+                    for (int i = 0; i < Accounts.Count; i++)
+                    {
+                        Console.WriteLine($"[{i + 1}] {Accounts[i]}");
+                    }
+                    Console.WriteLine("\nAnge vilket konto du vill föra över FRÅN: \n");
+                    Console.SetCursorPosition(43, Accounts.Count + 3);
+                    while (!(moveFrom <= Accounts.Count) || moveFrom < 1)
+                    {
+                        var keyInfo = Console.ReadKey(intercept: true);
+                        if (char.IsDigit(keyInfo.KeyChar))
+                        {
+                            if (int.Parse(keyInfo.KeyChar.ToString()) <= Accounts.Count && int.Parse(keyInfo.KeyChar.ToString()) > 0)
+                            {
+                                moveFrom = int.Parse(keyInfo.KeyChar.ToString());
+                                Console.WriteLine(Accounts[moveFrom - 1].Name);
+                            }
+                        }
+                    }
+                    Console.Write("Skriv in hur mycket du vill föra över och tryck Enter: ");
+                    decimal.TryParse(Console.ReadLine(), out transferMoney);
+                    if (Accounts[moveFrom - 1].Balance >= transferMoney)
+                    {
+                        if (BankSystem.AllUsers[index].Accounts[0].Currency == Accounts[moveFrom - 1].Currency)
+                        {
+                            BankSystem.AllUsers[index].Accounts[0].Balance += transferMoney;
+                            Accounts[moveFrom - 1].Balance -= transferMoney;
+                        }
+                        else
+                        {
+                            BankSystem.AllUsers[index].Accounts[0].Balance += BankSystem.CurrencyConverter(Accounts[moveFrom - 1].Currency, BankSystem.AllUsers[index].Accounts[0].Currency, transferMoney);
+                            Accounts[moveFrom - 1].Balance -= transferMoney;
+                        }
+                        Console.Clear();
+                        BankSystem.PrintGreen($"Transaktion lyckad!\n\n{transferMoney} {Accounts[moveFrom - 1].Currency} fördes över från {Accounts[moveFrom - 1].Name} till {BankSystem.AllUsers[index].Username}");
+                        notEnoughMoney = false;
+                        Log.Add($"{DateTime.Now} \n{transferMoney} {Accounts[moveFrom - 1].Currency} fördes över från {Accounts[moveFrom - 1].Name} till {BankSystem.AllUsers[index].Username}\n");
+                        BankSystem.Return();
+                        return false;
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine("Du har för lite pengar");
+                        notEnoughMoney = true;
+                    }
+                }
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("användare ej hittad");
+            }
+            return true;
         }
         public void OpenNewBankAccount()
         {
@@ -293,9 +328,10 @@ namespace Project_Lions
                         if (pass == Password)
                         {
                             Console.Clear();
-                            Console.WriteLine("Grattis till ditt lån.");
+                            Console.WriteLine($"Grattis till ditt lån. Pengarna finns nu tillgängliga på {Accounts[0].Name}");
                             LoanSum = LoanSum + total;
-                            Log.Add($"{DateTime.Now} Ett lån togs på {total} SEK. Din totala lånsumma blev då {LoanSum} SEK");
+                            Accounts[0].Balance += LoanInput;
+                            Log.Add($"{DateTime.Now} \nEtt lån togs på {total} SEK. Din totala lånsumma blev då {LoanSum} SEK\n");
                             BankSystem.Return();
                             loanCon = false;
                         }

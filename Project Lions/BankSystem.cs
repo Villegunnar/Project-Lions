@@ -180,14 +180,15 @@ namespace Project_Lions
             Console.WriteLine("[5] Tidigare överföringar");
             Console.WriteLine("[6] Logga ut");
         }
-        public static void AdminMenu(User admin)//ej klar
+        public static void AdminMenu(User admin)
         {
-            bool adminLoggedin = true;
+
+            bool adminLoggedin = true;        
+            Console.WriteLine("Välkommen " + admin.Username);
+            Console.WriteLine("Inloggad som admin");
+            Console.WriteLine();
             while (adminLoggedin)
             {
-                Console.WriteLine("Välkommen " + admin.Username);
-                Console.WriteLine("Inloggad som admin");
-                Console.WriteLine();
                 Console.WriteLine("[1] Se alla kunder");
                 Console.WriteLine("[2] Registrera ny kund");
                 Console.WriteLine("[3] Ändra valutakurs");
@@ -197,16 +198,20 @@ namespace Project_Lions
                 switch (adminmenu)
                 {
                     case 1:
+                        Console.Clear();
+                        Console.WriteLine("Alla användare");
                         foreach (User allusers in BankSystem.AllUsers)
                         {
                             Console.WriteLine(allusers);
                         }
+                        Return();
                         break;
                     case 2:
                         UserFactory.CreateNewUser();
                         break;
                     case 3:
                         Console.WriteLine("ändra valutakurs");
+                        Admin.CurrencyRates();
                         break;
                     case 4:
                         Console.Clear();
@@ -231,7 +236,7 @@ namespace Project_Lions
             while (loggedIn)
             {
                 Console.Clear();
-                Console.WriteLine($"Välkommen {user.Username}");
+                BankSystem.PrintYellow($"Välkommen {user.Username}");
                 PrintMenu();
                 var keyInfo = Console.ReadKey(intercept: true);
                 ConsoleKey menuChoice = keyInfo.Key;
@@ -329,9 +334,27 @@ namespace Project_Lions
             Console.WriteLine(input);
             Console.ResetColor();
         }
+        public static void PrintDarkYellow(string input)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine(input);
+            Console.ResetColor();
+        }
+        public static void PrintCyan(string input)
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(input);
+            Console.ResetColor();
+        }
+        public static void PrintYellow(string input)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(input);
+            Console.ResetColor();
+        }
         public static void Return()
         {
-            Console.WriteLine("\nTryck Enter för att återgå");
+            BankSystem.PrintCyan("\nTryck Enter för att återgå");
             Console.ReadLine();
             Console.Clear();
         }
@@ -341,12 +364,12 @@ namespace Project_Lions
             {
                 if (ToCurrency == "USD")
                 {
-                    decimal dollarResult = convertAmount * Admin.SekToUsd;
+                    decimal dollarResult = convertAmount * (Admin.SekRate / Admin.DollarRate);
                     return dollarResult;
                 }
                 else if (ToCurrency == "EUR")
                 {
-                    decimal euroResult = convertAmount * Admin.SekToEur;
+                    decimal euroResult = convertAmount * (Admin.SekRate / Admin.EurRate);
                     return euroResult;
                 }
             }
@@ -354,12 +377,12 @@ namespace Project_Lions
             {
                 if (ToCurrency == "SEK")
                 {
-                    decimal sekResult = convertAmount * Admin.UsdToSek;
+                    decimal sekResult = convertAmount * (Admin.DollarRate / Admin.SekRate);
                     return sekResult;
                 }
                 else if (ToCurrency == "EUR")
                 {
-                    decimal euroResult = convertAmount * Admin.UsdToEur;
+                    decimal euroResult = convertAmount * (Admin.DollarRate / Admin.EurRate);
                     return euroResult;
                 }
             }
@@ -367,46 +390,58 @@ namespace Project_Lions
             {
                 if (ToCurrency == "SEK")
                 {
-                    decimal eurResult = convertAmount * Admin.EurToSek;
+                    decimal eurResult = convertAmount * (Admin.EurRate / Admin.SekRate);
                     return eurResult;
                 }
                 else if (ToCurrency == "USD")
                 {
-                    decimal usdResult = convertAmount * Admin.EurToUsd;
+                    decimal usdResult = convertAmount * (Admin.EurRate / Admin.DollarRate);
                     return usdResult;
                 }
             }
             return 0;
         }
-        public static void CheckInterest()
+        public static bool CheckInterest()
         {
             decimal varIntRate = 0.006m;
             decimal fixIntRate1 = 0.011m;
             decimal fixIntRate2 = 0.014m;
             Console.Clear();
-            Console.WriteLine("Beräkna ränta på ett sparkonto");
-            Console.WriteLine();
-            Console.Write("Exempel på hur mycket pengar du vill sätta in: ");
-            decimal saveAccAmount;
-            while (!decimal.TryParse(Console.ReadLine(), out saveAccAmount))
+            BankSystem.PrintYellow("BERÄKNA RÄNTA, SPARKONTO\n\n");
+            Console.Write("Skriv ett exempel på hur mycket pengar du vill sätta in: ");
+            decimal saveAccAmount = 0;
+            string saveAccIn = BankSystem.ShowInput();
+            while (!decimal.TryParse(saveAccIn, out saveAccAmount) ^ saveAccIn == "ESC")
             {
                 BankSystem.ClearLine();
-                Console.Write("Exempel på hur mycket pengar du vill sätta in: ");
+                Console.Write("Skriv ett exempel på hur mycket pengar du vill sätta in: ");
+                saveAccIn = BankSystem.ShowInput();
             }
-            Console.Write("Exempel på hur många år du kommer att spara: ");
-            int numberOfYears;
-            while (!int.TryParse(Console.ReadLine(), out numberOfYears))
+            if (saveAccIn != "ESC")
             {
-                BankSystem.ClearLine();
                 Console.Write("Exempel på hur många år du kommer att spara: ");
+                int numberOfYears = 0;
+                string yearNumIn = BankSystem.ShowInput();
+                while (!int.TryParse(yearNumIn, out numberOfYears) ^ yearNumIn == "ESC")
+                {
+                    BankSystem.ClearLine();
+                    Console.Write("Exempel på hur många år du kommer att spara: ");
+                    yearNumIn = BankSystem.ShowInput();
+                }
+                if (yearNumIn != "ESC")
+                {
+                    Console.Clear();
+                    BankSystem.PrintYellow("SPARKONTO- OCH RÄNTEINFORMATION\n");
+                    Console.WriteLine("[1] Fasträntekonto, 1,10 % ränta årsbasis, bindningstid 1år" +
+                                   $"\n    På {numberOfYears} år kommer dina {saveAccAmount}kr att bli {CalcInterest(fixIntRate1, numberOfYears, saveAccAmount)} kr" +
+                                  "\n\n[2] Fasträntekonto, 1,40 % ränta årsbasis, bindningstid 2år." +
+                                   $"\n    På {numberOfYears} år kommer dina {saveAccAmount}kr att bli {CalcInterest(fixIntRate2, numberOfYears, saveAccAmount)} kr" +
+                                  "\n\n[3] Rörligträntekonto, aktuellränta: 0,60 % årsbasis, ingen bindningstid" +
+                                   $"\n    På {numberOfYears} år kommer dina {saveAccAmount}kr att bli {CalcInterest(varIntRate, numberOfYears, saveAccAmount)} kr");
+                    return false;
+                }
             }
-            Console.Clear();
-            Console.WriteLine("[1] Fasträntekonto, 1,10 % ränta årsbasis, bindningstid 1år" +
-                $"\nPå {numberOfYears} år kommer dina: {saveAccAmount}kr att bli {CalcInterest(fixIntRate1, numberOfYears, saveAccAmount)} kr" +
-                            "\n\n[2] Fasträntekonto, 1,40 % ränta årsbasis, bindningstid 2år." +
-                            $"\nPå {numberOfYears} år kommer dina: {saveAccAmount}kr att bli {CalcInterest(fixIntRate2, numberOfYears, saveAccAmount)} kr" +
-                            "\n\n[3] Rörligträntekonto, aktuellränta: 0,60 % årsbasis, ingen bindningstid" +
-                $"\nPå {numberOfYears} år kommer dina: {saveAccAmount}kr att bli {CalcInterest(varIntRate, numberOfYears, saveAccAmount)} kr");
+            return true;
         }
         public static decimal CalcInterest(decimal rate, int years, decimal sum)
         {
@@ -418,26 +453,33 @@ namespace Project_Lions
         }
         public static string ChooseCurrency()
         {
-            Console.WriteLine("Vilken Valuta: ");
-            Console.WriteLine("[1] SEK\n[2] USD\n[3] EUR");
-            int currencyChoice;
-            while (!int.TryParse(Console.ReadLine(), out currencyChoice) || currencyChoice < 1 || currencyChoice > 3)
+            bool loop = true;
+            do
             {
-                BankSystem.ClearLine();
-                Console.Write("Vilken Valuta: ");
-            }
-            switch (currencyChoice)
-            {
-                case 1:
-                    return "SEK";
-                case 2:
-                    return "USD";
-                case 3:
-                    return "EUR";
-                default:
-                    return "";
-            }
-
+                Console.WriteLine("Välj kontots valuta: ");
+                Console.WriteLine("[1] SEK\n[2] USD\n[3] EUR");
+                ConsoleKey select = Console.ReadKey().Key;
+                switch (select)
+                {
+                    case ConsoleKey.D1:
+                    case ConsoleKey.NumPad1:
+                        loop = false;
+                        return "SEK";
+                    case ConsoleKey.D2:
+                    case ConsoleKey.NumPad2:
+                        loop = false;
+                        return "USD";
+                    case ConsoleKey.D3:
+                    case ConsoleKey.NumPad3:
+                        loop = false;
+                        return "EUR";
+                    case ConsoleKey.Escape:
+                        loop = false;
+                        return "ESC";
+                    default:
+                        return "";
+                }
+            } while (loop);
         }
     }
 }

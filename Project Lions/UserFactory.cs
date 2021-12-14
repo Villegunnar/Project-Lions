@@ -52,7 +52,7 @@ namespace Project_Lions
                 passwordTry = Console.ReadLine();
                 Console.SetCursorPosition(19, 4);
                 passConfTry = Console.ReadLine();
-                if (UsernameIsVacant(usernameTry, BankSystem.AllUsers))
+                if (UsernameIsVacant(usernameTry, BankSystem.AllCustomers))
                 {
                     if (passwordTry == passConfTry)
                     {
@@ -67,7 +67,7 @@ namespace Project_Lions
                             else
                             {
                                 Console.Clear();
-                                BankSystem.AllUsers.Add(new User(usernameTry, passwordTry));
+                                BankSystem.AllCustomers.Add(new Customer(usernameTry, passwordTry, new Account { Name = "Lönekonto", Balance = 10000, Currency = "SEK" }));
                                 Console.WriteLine("Kontot {0} har skapats!", usernameTry);
                                 Console.ReadLine();
                             }
@@ -126,9 +126,9 @@ namespace Project_Lions
             }
             return false;
         }
-        public static bool UsernameIsVacant(string name, List<User> theseUsers)
+        public static bool UsernameIsVacant(string name, List<Customer> theseCustomers)
         {
-            foreach (User user in theseUsers)
+            foreach (User user in theseCustomers)
             {
                 if (user.Username.Equals(name))
                 {

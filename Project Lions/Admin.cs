@@ -9,9 +9,10 @@ namespace Project_Lions
         public static decimal SekRate = 1m;
         public static decimal DollarRate = 9.1m;
         public static decimal EurRate = 10.25m;
-        public Admin() : this("", "", true) { }
-        public Admin(string admUsername, string admPassword, bool isAdmin) : base(admUsername, admPassword)
+        public Admin(string admUsername, string admPassword, bool isAdmin)
         {
+            this.Username = admUsername;
+            this.Password = admPassword;
             this.IsAdmin = true;
         }
         public static void CurrencyRates()

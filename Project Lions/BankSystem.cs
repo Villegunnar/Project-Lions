@@ -8,65 +8,74 @@ namespace Project_Lions
 {
     public static class BankSystem
     {
-        public static List<User> AllUsers = new List<User>();
+        public static List<Customer> AllCustomers = new List<Customer>();
+        public static List<Admin> AllAdmins = new List<Admin>();
         static BankSystem()
         {
-            User Viktor = new User("viktor", "viktor123");
-            Viktor.Accounts.AddRange(new List<Account> { new Account { Balance = 100, Name = "Lönekonto", Currency = "SEK" }, new Account { Balance = 2000, Name = "Investeringskoto", Currency = "SEK" } });
-            User Lukas = new User("lukas", "lukas123");
-            Lukas.Accounts.AddRange(new List<Account> { new Account { Balance = 200, Name = "Lönekonto", Currency = "SEK" }, new Account { Balance = 3000, Name = "Ölkonto", Currency = "SEK" } });
-            User Erik = new User("erik", "erik123");
-            Erik.Accounts.AddRange(new List<Account> { new Account { Balance = 300, Name = "Lönekonto", Currency = "SEK" }, new Account { Balance = 1003, Name = "Eventkonto", Currency = "SEK" } });
-            User Anas = new Admin("anas", "anas123", true);
-            AllUsers.Add(Erik);
-            AllUsers.Add(Viktor);
-            AllUsers.Add(Lukas);
-            AllUsers.Add(Anas);
+            Customer Viktor = new Customer("Viktor", "Viktor123!", new Account { Balance = 100, Name = "Lönekonto", Currency = "SEK" });
+            Viktor.Accounts.AddRange(new List<Account> { new Account { Balance = 2000, Name = "Investeringskoto", Currency = "SEK" } });
+            Customer Lukas = new Customer("Lukas", "Lukas123!", new Account { Balance = 200, Name = "Lönekonto", Currency = "SEK" });
+            Lukas.Accounts.AddRange(new List<Account> { new Account { Balance = 3000, Name = "Ölkonto", Currency = "SEK" } });
+            Customer Erik = new Customer("Erik", "Erik123!", new Account { Balance = 300, Name = "Lönekonto", Currency = "SEK" });
+            Erik.Accounts.AddRange(new List<Account> { new Account { Balance = 1003, Name = "Eventkonto", Currency = "SEK" } });
+            Admin Anas = new Admin("Anas", "Anas123!", true);
+            AllCustomers.Add(Erik);
+            AllCustomers.Add(Viktor);
+            AllCustomers.Add(Lukas);
+            AllAdmins.Add(Anas);
         }
-        public static bool PassCheck(string userTry, string passTry)
+        public static bool PassCheck(User user, string userTry, string passTry)
         {
-            foreach (User user in AllUsers)
+            if (user.Username == userTry)
             {
-                if (user.Username == userTry)
+                if (!user.LockedOut)
                 {
-                    if (!user.LockedOut)
+                    if (user.Password == passTry)
                     {
-                        if (user.Password == passTry)
-                        {
-                            Console.WriteLine("Login lyckades!");
-                            user.LoginCounter = 0;
-                            Console.Clear();
-                            if (user.IsAdmin)
-                            {
-                                AdminMenu(user);
-                                return true;
-                            }
-                            else
-                            {
-                                MainMenu(user);
-                                return true;
-                            }
-                        }
-                        else
-                        {
-                            user.LoginCounter++;
-                            if (user.LoginCounter > 2)
-                            {
-                                Console.Clear();
-                                CenterColor($"Kontot {user.Username} är nu låst", false, "Red");
-                                Return();
-                                user.LockedOut = true;
-                            }
-                            return false;
-                        }
+                        Console.WriteLine("Login lyckades!");
+                        user.LoginCounter = 0;
+                        Console.Clear();
+                        return true;
                     }
                     else
                     {
-                        Console.Clear();
-                        CenterColor($"Kontot {user.Username} är låst", false, "Red");
-                        Return();
+                        user.LoginCounter++;
+                        if (user.LoginCounter > 2)
+                        {
+                            Console.Clear();
+                            CenterColor($"Kontot {user.Username} är nu låst", false, "Red");
+                            Return();
+                            user.LockedOut = true;
+                        }
                         return false;
                     }
+                }
+                else
+                {
+                    Console.Clear();
+                    CenterColor($"Kontot {user.Username} är låst", false, "Red");
+                    Return();
+                    return false;
+                }
+            }
+            return false;
+        }
+        public static bool UserCheck(string userTry, string passTry)
+        {
+            foreach (Customer user in AllCustomers)
+            {
+                if (PassCheck(user, userTry, passTry))
+                {
+                    MainMenu(user);
+                    return true;
+                }
+            }
+            foreach (Admin admin in AllAdmins)
+            {
+                if (PassCheck(admin, userTry, passTry))
+                {
+                    AdminMenu(admin);
+                    return true;
                 }
             }
             return false;
@@ -90,25 +99,26 @@ namespace Project_Lions
             do
             {
                 Console.Clear();
+                CenterColor("INLOGGNING", true, "Yellow");
                 Console.WriteLine("Användarnamn: \nLösenord: \n\nTryck Escape för att återgå");
                 if (tries > 0)
                 {
-                    Console.SetCursorPosition(0, 2);  
+                    Console.SetCursorPosition(0, 3);  
                     CenterColor("Felaktigt lösenord eller användarnamn.", false, "Red");
                 }
-                Console.SetCursorPosition(14, 0);
+                Console.SetCursorPosition(14, 1);
                 string usernameInput = ShowInput();
                 if (usernameInput.ToUpper() == "ESC")
                 {
                     break;
                 }
-                Console.SetCursorPosition(10, 1);
+                Console.SetCursorPosition(10, 2);
                 string passwordInput = HideInput();
                 if (passwordInput.ToUpper() == "ESC")
                 {
                     break;
                 }
-                loginSuccess = PassCheck(usernameInput, passwordInput);
+                loginSuccess = UserCheck(usernameInput, passwordInput);
                 tries++;
             } while (!loginSuccess);
         }
@@ -180,7 +190,7 @@ namespace Project_Lions
             Console.WriteLine("[5] Tidigare överföringar");
             Console.WriteLine("[6] Logga ut");
         }
-        public static void AdminMenu(User admin)
+        public static void AdminMenu(Admin admin)
         {
 
             bool adminLoggedin = true;        
@@ -200,7 +210,7 @@ namespace Project_Lions
                     case 1:
                         Console.Clear();
                         Console.WriteLine("Alla användare");
-                        foreach (User allusers in BankSystem.AllUsers)
+                        foreach (User allusers in AllCustomers)
                         {
                             Console.WriteLine(allusers);
                         }
@@ -230,14 +240,13 @@ namespace Project_Lions
                 }
             }
         }
-        public static void MainMenu(User user)
+        public static void MainMenu(Customer user)
         {
             bool loggedIn = true;
             while (loggedIn)
             {
                 Console.Clear();
-                //BankSystem.PrintYellow($"Välkommen {user.Username}");
-                BankSystem.CenterColor($"Välkommen {user.Username}", true, "Yellow");
+                CenterColor($"Välkommen {user.Username}", true, "Yellow");
                 PrintMenu();
                 var keyInfo = Console.ReadKey(intercept: true);
                 ConsoleKey menuChoice = keyInfo.Key;
@@ -283,6 +292,10 @@ namespace Project_Lions
         }
         public static void Init()
         {
+            Console.WindowHeight = 40;
+            Console.WindowWidth = 75;
+            
+            PrintLogo();
             bool loop = true;
             ConsoleKey selector;
             while (loop)
@@ -291,8 +304,7 @@ namespace Project_Lions
                 {
                     Console.Clear();
                     CenterColor("------LION BANK INC------", true,"Yellow");
-
-                    //Console.WriteLine("------LION BANK INC------");
+                    CenterColor("Kings of the finance jungle", true, "DarkYellow");
                     Console.WriteLine();
                     Console.WriteLine("[1]. Logga In");
                     Console.WriteLine("[2]. Avsluta");
@@ -381,7 +393,6 @@ namespace Project_Lions
             decimal fixIntRate1 = 0.011m;
             decimal fixIntRate2 = 0.014m;
             Console.Clear();
-            //BankSystem.PrintYellow("BERÄKNA RÄNTA, SPARKONTO\n\n");
             CenterColor("BERÄKNA RÄNTA, SPARKONTO\n\n", true, "Yellow");
             Console.Write("Skriv ett exempel på hur mycket pengar du vill sätta in: ");
             decimal saveAccAmount = 0;
@@ -406,7 +417,6 @@ namespace Project_Lions
                 if (yearNumIn != "ESC")
                 {
                     Console.Clear();
-                    //BankSystem.PrintYellow("SPARKONTO- OCH RÄNTEINFORMATION\n");
                     CenterColor("SPARKONTO- OCH RÄNTEINFORMATION\n", true, "Yellow");
                     Console.WriteLine("[1] Fasträntekonto, 1,10 % ränta årsbasis, bindningstid 1år" +
                                    $"\n    På {numberOfYears} år kommer dina {saveAccAmount}kr att bli {CalcInterest(fixIntRate1, numberOfYears, saveAccAmount)} kr" +
@@ -458,9 +468,9 @@ namespace Project_Lions
             } while (loop);
         }
 
-        public static void CenterColor(string text, bool center, string color = "White")
+        public static void CenterColor(string text, bool Center, string color = "White")
         {
-            if (center)
+            if (Center)
             {
                 Console.SetCursorPosition((Console.WindowWidth - text.Length) / 2, Console.CursorTop);
             }
@@ -491,5 +501,109 @@ namespace Project_Lions
             Console.WriteLine(text);
             Console.ResetColor();
         }
+        public static void PrintLogo()
+        {
+            string logo = System.IO.File.ReadAllText(@"C:\Users\ville\Source\Repos\Villegunnar\Project-Lions\Project Lions\Resources\TeamLionBankIncLogo.txt");
+            Random randy = new Random();
+            for (int i = 0; i <= 100; i++)
+            {
+                Console.SetCursorPosition(30, 5);
+                CenterColor($"LADDAR: {i}%",true);
+                int delayAmt = randy.Next(1, 11);
+                int delay = 0;
+                if (delayAmt != 10)
+                {
+                    delay = randy.Next(5, 51);
+                }
+                else
+                {
+                    delay = randy.Next(50, 301);
+                }
+                Thread.Sleep(delay);
+                Console.Clear();
+            }
+            foreach (char c in logo)
+            {
+                Console.Write(c);
+                if (c != ' ')
+                {
+                    int delayAmt = randy.Next(1, 11);
+                    int delay = 0;
+                    if (delayAmt != 10)
+                    {
+                        delay = randy.Next(1, 4);
+                    }
+                    else
+                    {
+                        delay = randy.Next(3, 13);
+                    }
+                    Thread.Sleep(delay);
+                }
+            }
+            {
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine(logo);
+                Thread.Sleep(80);
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.DarkCyan;
+                Console.WriteLine(logo);
+                Thread.Sleep(80);
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine(logo);
+                Thread.Sleep(80);
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.DarkBlue;
+                Console.WriteLine(logo);
+                Thread.Sleep(80);
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                Console.WriteLine(logo);
+                Thread.Sleep(80);
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.WriteLine(logo);
+                Thread.Sleep(80);
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(logo);
+                Thread.Sleep(80);
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine(logo);
+                Thread.Sleep(80);
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine(logo);
+                Thread.Sleep(80);
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine(logo);
+                Thread.Sleep(80);
+                Console.ResetColor();
+                Console.Clear();
+                Console.WriteLine(logo);
+                Console.SetCursorPosition(33, 37);
+                Console.WriteLine("LION BANK INC");
+                Console.SetCursorPosition(27, 38);
+                Console.WriteLine("Kings of the finance jungle");
+                Thread.Sleep(3000);
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.WriteLine(logo);
+                Thread.Sleep(150);
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.WriteLine(logo);
+                Thread.Sleep(150);
+                Console.Clear();
+                Console.WriteLine(logo);
+                Thread.Sleep(150);
+                Console.Clear();
+                Thread.Sleep(400);
+            }
+        }
+
     }
 }

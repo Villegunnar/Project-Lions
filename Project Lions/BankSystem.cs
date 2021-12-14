@@ -53,7 +53,7 @@ namespace Project_Lions
                             if (user.LoginCounter > 2)
                             {
                                 Console.Clear();
-                                PrintRed($"Kontot {user.Username} är nu låst");                                
+                                CenterColor($"Kontot {user.Username} är nu låst", false, "Red");
                                 Return();
                                 user.LockedOut = true;
                             }
@@ -63,7 +63,7 @@ namespace Project_Lions
                     else
                     {
                         Console.Clear();
-                        PrintRed($"Kontot {user.Username} är låst");
+                        CenterColor($"Kontot {user.Username} är låst", false, "Red");
                         Return();
                         return false;
                     }
@@ -93,8 +93,8 @@ namespace Project_Lions
                 Console.WriteLine("Användarnamn: \nLösenord: \n\nTryck Escape för att återgå");
                 if (tries > 0)
                 {
-                    Console.SetCursorPosition(0, 2);
-                    BankSystem.PrintRed("Felaktigt lösenord eller användarnamn.");
+                    Console.SetCursorPosition(0, 2);  
+                    CenterColor("Felaktigt lösenord eller användarnamn.", false, "Red");
                 }
                 Console.SetCursorPosition(14, 0);
                 string usernameInput = ShowInput();
@@ -236,7 +236,8 @@ namespace Project_Lions
             while (loggedIn)
             {
                 Console.Clear();
-                BankSystem.PrintYellow($"Välkommen {user.Username}");
+                //BankSystem.PrintYellow($"Välkommen {user.Username}");
+                BankSystem.CenterColor($"Välkommen {user.Username}", true, "Yellow");
                 PrintMenu();
                 var keyInfo = Console.ReadKey(intercept: true);
                 ConsoleKey menuChoice = keyInfo.Key;
@@ -289,7 +290,9 @@ namespace Project_Lions
                 do
                 {
                     Console.Clear();
-                    Console.WriteLine("------LION BANK INC------");
+                    CenterColor("------LION BANK INC------", true,"Yellow");
+
+                    //Console.WriteLine("------LION BANK INC------");
                     Console.WriteLine();
                     Console.WriteLine("[1]. Logga In");
                     Console.WriteLine("[2]. Avsluta");
@@ -322,39 +325,10 @@ namespace Project_Lions
             Console.Write(new String(' ', Console.WindowWidth));
             Console.SetCursorPosition(0, Console.CursorTop - 1);
         }
-        public static void PrintGreen(string input)
-        {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(input);
-            Console.ResetColor();
-        } 
-        public static void PrintRed(string input)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(input);
-            Console.ResetColor();
-        }
-        public static void PrintDarkYellow(string input)
-        {
-            Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine(input);
-            Console.ResetColor();
-        }
-        public static void PrintCyan(string input)
-        {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine(input);
-            Console.ResetColor();
-        }
-        public static void PrintYellow(string input)
-        {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(input);
-            Console.ResetColor();
-        }
         public static void Return()
         {
-            BankSystem.PrintCyan("\nTryck Enter för att återgå");
+
+            CenterColor("\nTryck Enter för att återgå", false, "Cyan");
             Console.ReadLine();
             Console.Clear();
         }
@@ -407,7 +381,8 @@ namespace Project_Lions
             decimal fixIntRate1 = 0.011m;
             decimal fixIntRate2 = 0.014m;
             Console.Clear();
-            BankSystem.PrintYellow("BERÄKNA RÄNTA, SPARKONTO\n\n");
+            //BankSystem.PrintYellow("BERÄKNA RÄNTA, SPARKONTO\n\n");
+            CenterColor("BERÄKNA RÄNTA, SPARKONTO\n\n", true, "Yellow");
             Console.Write("Skriv ett exempel på hur mycket pengar du vill sätta in: ");
             decimal saveAccAmount = 0;
             string saveAccIn = BankSystem.ShowInput();
@@ -431,7 +406,8 @@ namespace Project_Lions
                 if (yearNumIn != "ESC")
                 {
                     Console.Clear();
-                    BankSystem.PrintYellow("SPARKONTO- OCH RÄNTEINFORMATION\n");
+                    //BankSystem.PrintYellow("SPARKONTO- OCH RÄNTEINFORMATION\n");
+                    CenterColor("SPARKONTO- OCH RÄNTEINFORMATION\n", true, "Yellow");
                     Console.WriteLine("[1] Fasträntekonto, 1,10 % ränta årsbasis, bindningstid 1år" +
                                    $"\n    På {numberOfYears} år kommer dina {saveAccAmount}kr att bli {CalcInterest(fixIntRate1, numberOfYears, saveAccAmount)} kr" +
                                   "\n\n[2] Fasträntekonto, 1,40 % ränta årsbasis, bindningstid 2år." +
@@ -480,6 +456,40 @@ namespace Project_Lions
                         return "";
                 }
             } while (loop);
+        }
+
+        public static void CenterColor(string text, bool center, string color = "White")
+        {
+            if (center)
+            {
+                Console.SetCursorPosition((Console.WindowWidth - text.Length) / 2, Console.CursorTop);
+            }
+            if (color == "Yellow")
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+            }
+            if (color == "Cyan")
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
+            }
+            if (color == "DarkYellow")
+            {
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+            }
+            if (color == "Red")
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+            }
+            if (color == "Green")
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+            }
+            if (color == "White")
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            Console.WriteLine(text);
+            Console.ResetColor();
         }
     }
 }

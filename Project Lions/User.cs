@@ -30,7 +30,7 @@ namespace Project_Lions
         public void DisplayAccounts()
         {
             Console.Clear();
-            BankSystem.PrintYellow("KONTOÖVERSIKT\n");
+            BankSystem.CenterColor("KONTOÖVERSIKT\n", true, "Yellow");
             foreach (Account item in Accounts)
             {
                 Console.WriteLine(item);
@@ -47,6 +47,7 @@ namespace Project_Lions
             while (transfer)
             {
                 Console.Clear();
+                BankSystem.CenterColor("ÖVERFÖRING\n", true, "Yellow");
                 Console.WriteLine("[1] Överföring mellan egna konton");
                 Console.WriteLine("[2] Överföring till andra kunder i Lion Bank INC");
                 var keyInfo = Console.ReadKey(intercept: true);
@@ -77,13 +78,13 @@ namespace Project_Lions
             int moveFrom = 0, moveTo = 0;
             decimal amount;
             Console.Clear();
-            Console.WriteLine("Dina konton:\n");
+            BankSystem.CenterColor("ÖVERFÖRING MELLAN EGNA KONTON", true, "Yellow");
+            BankSystem.CenterColor("Dina konton:\n", false, "DarkYellow");
             for (int i = 0; i < Accounts.Count; i++)
             {
                 Console.WriteLine($"[{i + 1}] {Accounts[i]}");
             }
-            Console.WriteLine();
-            Console.Write("Ange vilket konto du vill föra över FRÅN: ");
+            Console.Write("\nAnge vilket konto du vill föra över FRÅN: ");
             while (!(moveFrom <= Accounts.Count) || moveFrom < 1)
             {
                 var keyInfo = Console.ReadKey(intercept: true);
@@ -126,19 +127,22 @@ namespace Project_Lions
                 Accounts[moveTo - 1].Balance += BankSystem.CurrencyConverter(Accounts[moveFrom - 1].Currency, Accounts[moveTo - 1].Currency, amount);
             }
             Console.Clear();
-            BankSystem.PrintGreen($"Transaktion lyckad!\n\n{amount} {Accounts[moveFrom - 1].Currency} fördes över från {Accounts[moveFrom - 1].Name} till {Accounts[moveTo - 1].Name}");
-            Log.Add($"{DateTime.Now} \n{amount} {Accounts[moveFrom - 1].Currency} fördes över från {Accounts[moveFrom - 1].Name} till {Accounts[moveTo - 1].Name}\n");
+            BankSystem.CenterColor("ÖVERFÖRING MELLAN EGNA KONTON\n", true, "Yellow");
+            BankSystem.CenterColor($"Transaktion lyckad!\n{amount} {Accounts[moveFrom - 1].Currency} fördes över från {Accounts[moveFrom - 1].Name} till {Accounts[moveTo - 1].Name}", false, "Green");
+            Log.Add($"\n{DateTime.Now} \n{amount} {Accounts[moveFrom - 1].Currency} fördes över från {Accounts[moveFrom - 1].Name} till {Accounts[moveTo - 1].Name}");
         }
         public bool ExternalTransfer()
         {
             Console.Clear();
             DateTime today = DateTime.Now;
-            DateTime SpecTime1 = new DateTime(today.Year, today.Month, today.Day, today.Hour, 00, 00);
-            DateTime SpecTime2 = new DateTime(today.Year, today.Month, today.Day, today.Hour, 15, 00);
-            DateTime SpecTime3 = new DateTime(today.Year, today.Month, today.Day, today.Hour, 30, 00);
-            DateTime SpecTime4 = new DateTime(today.Year, today.Month, today.Day, today.Hour, 45, 00);
-            TimeSpan timeUntilExe1, timeUntilExe2, timeUntilExe3, timeUntilExe4;
+            DateTime SpecTime1 = new DateTime(today.Year, today.Month, today.Day, today.Hour, 15, 00);
+            DateTime SpecTime2 = new DateTime(today.Year, today.Month, today.Day, today.Hour, 30, 00);
+            DateTime SpecTime3 = new DateTime(today.Year, today.Month, today.Day, today.Hour, 45, 00);
+            DateTime SpecTime4 = new DateTime(today.Year, today.Month, today.Day, today.Hour + 1, 00, 00);
+            DateTime time = new DateTime();
+            TimeSpan timeUntilExe = SpecTime1 - DateTime.Now;
             decimal amount;
+            BankSystem.CenterColor("ÖVERFÖRING TILL ANNAN ANVÄNDARE\n", true, "Yellow");
             Console.Write("Skriv in användaren du vill föra över till: ");
             string usernameSearch = Console.ReadLine();
             bool notEnoughMoney = true;
@@ -155,17 +159,18 @@ namespace Project_Lions
             }
             if (userFound)
             {
-                int moveFrom = 0;
-                Console.Clear();
-                Console.WriteLine("Användare hittad!\n");
                 while (notEnoughMoney)
                 {
+                    int moveFrom = 0;
+                    Console.Clear();
+                    BankSystem.CenterColor("ÖVERFÖRING TILL ANNAN ANVÄNDARE", true, "Yellow");
+                    BankSystem.CenterColor($"Användare {usernameSearch} hittad!\n", false, "DarkYellow");
                     for (int i = 0; i < Accounts.Count; i++)
                     {
                         Console.WriteLine($"[{i + 1}] {Accounts[i]}");
                     }
-                    Console.WriteLine("\nAnge vilket konto du vill föra över FRÅN: \n");
-                    Console.SetCursorPosition(43, Accounts.Count + 3);
+                    Console.WriteLine("\nAnge vilket konto du vill föra över FRÅN: ");
+                    Console.SetCursorPosition(43, Accounts.Count + 4);
                     while (!(moveFrom <= Accounts.Count) || moveFrom < 1)
                     {
                         var keyInfo = Console.ReadKey(intercept: true);
@@ -186,105 +191,78 @@ namespace Project_Lions
                         {
                             if (DateTime.Now <= SpecTime1)
                             {
-                                timeUntilExe1 = SpecTime1 - DateTime.Now;
-                                Accounts[moveFrom - 1].Balance -= amount;
-                                Task.Delay(timeUntilExe1).ContinueWith((x) => BankSystem.AllUsers[index].Accounts[0].Balance += amount);
-                                var now = DateTime.Now;
-                                Task.Delay(timeUntilExe1).ContinueWith((x) => Log.Add($"{SpecTime1} {amount} {Accounts[moveFrom - 1].Currency} överfördes från {Accounts[moveFrom - 1].Name} till {BankSystem.AllUsers[index].Username}"));
-                                Console.Clear();
-                                BankSystem.PrintGreen($"Överföring begärd.\n\n{amount} {Accounts[moveFrom - 1].Currency} överförs från {Accounts[moveFrom - 1].Name} till {BankSystem.AllUsers[index].Username} klockan {SpecTime1}.\n");
+                                timeUntilExe = SpecTime1 - DateTime.Now;
+                                time = SpecTime1;
                             }
                             else if (DateTime.Now <= SpecTime2)
                             {
-                                timeUntilExe2 = SpecTime2 - DateTime.Now;
-                                Accounts[moveFrom - 1].Balance -= amount;
-                                Task.Delay(timeUntilExe2).ContinueWith((x) => BankSystem.AllUsers[index].Accounts[0].Balance += amount);
-                                var now = DateTime.Now;
-                                Task.Delay(timeUntilExe2).ContinueWith((x) => Log.Add($"{SpecTime2} {amount} {Accounts[moveFrom - 1].Currency} överfördes från {Accounts[moveFrom - 1].Name} till {BankSystem.AllUsers[index].Username}"));
-                                Console.Clear();
-                                BankSystem.PrintGreen($"Överföring begärd.\n\n{amount} {Accounts[moveFrom - 1].Currency} överförs från {Accounts[moveFrom - 1].Name} till {BankSystem.AllUsers[index].Username} klockan {SpecTime2}.\n");
+                                timeUntilExe = SpecTime2 - DateTime.Now;
+                                time = SpecTime2;
                             }
                             else if (DateTime.Now <= SpecTime3)
                             {
-                                timeUntilExe3 = SpecTime3 - DateTime.Now;
-                                Accounts[moveFrom - 1].Balance -= amount;
-                                Task.Delay(timeUntilExe3).ContinueWith((x) => BankSystem.AllUsers[index].Accounts[0].Balance += amount);
-                                var now = DateTime.Now;
-                                Task.Delay(timeUntilExe3).ContinueWith((x) => Log.Add($"{SpecTime3} {amount} {Accounts[moveFrom - 1].Currency} överfördes från {Accounts[moveFrom - 1].Name} till {BankSystem.AllUsers[index].Username}"));
-                                Console.Clear();
-                                BankSystem.PrintGreen($"Överföring begärd.\n\n{amount} {Accounts[moveFrom - 1].Currency} överförs från {Accounts[moveFrom - 1].Name} till {BankSystem.AllUsers[index].Username} klockan {SpecTime3}.\n");
+                                timeUntilExe = SpecTime3 - DateTime.Now;
+                                time = SpecTime3;
                             }
                             else if (DateTime.Now <= SpecTime4)
                             {
-                                timeUntilExe4 = SpecTime4 - DateTime.Now;
+                                timeUntilExe = SpecTime4 - DateTime.Now;
+                                time = SpecTime4;
                                 Accounts[moveFrom - 1].Balance -= amount;
-                                Task.Delay(timeUntilExe4).ContinueWith((x) => BankSystem.AllUsers[index].Accounts[0].Balance += amount);
+                                Task.Delay(timeUntilExe).ContinueWith((x) => BankSystem.AllUsers[index].Accounts[0].Balance += amount);
                                 var now = DateTime.Now;
-                                Task.Delay(timeUntilExe4).ContinueWith((x) => Log.Add($"{SpecTime4} {amount} {Accounts[moveFrom - 1].Currency} överfördes från {Accounts[moveFrom - 1].Name} till {BankSystem.AllUsers[index].Username}"));
-                                Console.Clear();
-                                BankSystem.PrintGreen($"Överföring begärd.\n\n{amount} {Accounts[moveFrom - 1].Currency} överförs från {Accounts[moveFrom - 1].Name} till {BankSystem.AllUsers[index].Username} klockan {SpecTime4}.\n");
+                                Task.Delay(timeUntilExe).ContinueWith((x) => Log.Add($"\n{time} \n{amount} {Accounts[moveFrom - 1].Currency} överfördes från {Accounts[moveFrom - 1].Name} till {BankSystem.AllUsers[index].Username}"));
                             }
+                            else
+                            {
+                                if (DateTime.Now <= SpecTime1)
+                                {
+                                    timeUntilExe = SpecTime1 - DateTime.Now;
+                                    time = SpecTime1;
+                                }
+                                else if (DateTime.Now <= SpecTime2)
+                                {
+                                    timeUntilExe = SpecTime2 - DateTime.Now;
+                                    time = SpecTime2;
+                                }
+                                else if (DateTime.Now <= SpecTime3)
+                                {
+                                    timeUntilExe = SpecTime3 - DateTime.Now;
+                                    time = SpecTime3;
+                                }
+                                else if (DateTime.Now <= SpecTime4)
+                                {
+                                    timeUntilExe = SpecTime4 - DateTime.Now;
+                                    time = SpecTime4;
+                                }
+                                Accounts[moveFrom - 1].Balance -= amount;
+                                Task.Delay(timeUntilExe).ContinueWith((x) => BankSystem.AllUsers[index].Accounts[0].Balance += BankSystem.CurrencyConverter(Accounts[moveFrom - 1].Currency, BankSystem.AllUsers[index].Accounts[0].Currency, amount));
+                                var now = DateTime.Now;
+                                Task.Delay(timeUntilExe).ContinueWith((x) => Log.Add($"\n{SpecTime1} \n{amount} {Accounts[moveFrom - 1].Currency} överfördes från {Accounts[moveFrom - 1].Name} till {BankSystem.AllUsers[index].Username}"));
+                            }
+                            notEnoughMoney = false;
+                            Console.Clear();
+
+                            BankSystem.CenterColor("ÖVERFÖRING TILL ANNAN ANVÄNDARE\n", true, "Yellow");
+                            BankSystem.CenterColor($"Överföring begärd.\n\n{amount} {Accounts[moveFrom - 1].Currency} överförs från {Accounts[moveFrom - 1].Name} till {BankSystem.AllUsers[index].Username} klockan {time}.\n", false, "Green");
+                            Log.Add($"\n{DateTime.Now} \nÖverföring begärd: {amount} {Accounts[moveFrom - 1].Currency} från {Accounts[moveFrom - 1].Name} till {BankSystem.AllUsers[index].Username}");
+                            BankSystem.Return();
+                            return false;
                         }
                         else
                         {
-                            if (DateTime.Now <= SpecTime1)
-                            {
-                                timeUntilExe1 = SpecTime1 - DateTime.Now;
-                                Accounts[moveFrom - 1].Balance -= amount;
-                                Task.Delay(timeUntilExe1).ContinueWith((x) => BankSystem.AllUsers[index].Accounts[0].Balance += BankSystem.CurrencyConverter(Accounts[moveFrom - 1].Currency, BankSystem.AllUsers[index].Accounts[0].Currency, amount));
-                                var now = DateTime.Now;
-                                Task.Delay(timeUntilExe1).ContinueWith((x) => Log.Add($"{SpecTime1} {amount} {Accounts[moveFrom - 1].Currency} överfördes från {Accounts[moveFrom - 1].Name} till {BankSystem.AllUsers[index].Username}"));
-                                Console.Clear();
-                                BankSystem.PrintGreen($"Överföring begärd.\n\n{amount} {Accounts[moveFrom - 1].Currency} överförs från {Accounts[moveFrom - 1].Name} till {BankSystem.AllUsers[index].Username} klockan {SpecTime1}.\n");
-                            }
-                            else if (DateTime.Now <= SpecTime2)
-                            {
-                                timeUntilExe2 = SpecTime2 - DateTime.Now;
-                                Accounts[moveFrom - 1].Balance -= amount;
-                                Task.Delay(timeUntilExe2).ContinueWith((x) => BankSystem.AllUsers[index].Accounts[0].Balance += BankSystem.CurrencyConverter(Accounts[moveFrom - 1].Currency, BankSystem.AllUsers[index].Accounts[0].Currency, amount));
-                                var now = DateTime.Now;
-                                Task.Delay(timeUntilExe2).ContinueWith((x) => Log.Add($"{SpecTime2} {amount} {Accounts[moveFrom - 1].Currency} överfördes från {Accounts[moveFrom - 1].Name} till {BankSystem.AllUsers[index].Username}"));
-                                Console.Clear();
-                                BankSystem.PrintGreen($"Överföring begärd.\n\n{amount} {Accounts[moveFrom - 1].Currency} överförs från {Accounts[moveFrom - 1].Name} till {BankSystem.AllUsers[index].Username} klockan {SpecTime2}.\n");
-                            }
-                            else if (DateTime.Now <= SpecTime3)
-                            {
-                                timeUntilExe3 = SpecTime3 - DateTime.Now;
-                                Accounts[moveFrom - 1].Balance -= amount;
-                                Task.Delay(timeUntilExe3).ContinueWith((x) => BankSystem.AllUsers[index].Accounts[0].Balance += BankSystem.CurrencyConverter(Accounts[moveFrom - 1].Currency, BankSystem.AllUsers[index].Accounts[0].Currency, amount));
-                                var now = DateTime.Now;
-                                Task.Delay(timeUntilExe3).ContinueWith((x) => Log.Add($"{SpecTime3} {amount} {Accounts[moveFrom - 1].Currency} överfördes från {Accounts[moveFrom - 1].Name} till {BankSystem.AllUsers[index].Username}"));
-                                Console.Clear();
-                                BankSystem.PrintGreen($"Överföring begärd.\n\n{amount} {Accounts[moveFrom - 1].Currency} överförs från {Accounts[moveFrom - 1].Name} till {BankSystem.AllUsers[index].Username} klockan {SpecTime3}.\n");
-                            }
-                            else if (DateTime.Now <= SpecTime4)
-                            {
-                                timeUntilExe4 = SpecTime4 - DateTime.Now;
-                                Accounts[moveFrom - 1].Balance -= amount;
-                                Task.Delay(timeUntilExe4).ContinueWith((x) => BankSystem.AllUsers[index].Accounts[0].Balance += BankSystem.CurrencyConverter(Accounts[moveFrom - 1].Currency, BankSystem.AllUsers[index].Accounts[0].Currency, amount));
-                                var now = DateTime.Now;
-                                Task.Delay(timeUntilExe4).ContinueWith((x) => Log.Add($"{SpecTime4} {amount} {Accounts[moveFrom - 1].Currency} överfördes från {Accounts[moveFrom - 1].Name} till {BankSystem.AllUsers[index].Username}"));
-                                Console.Clear();
-                                BankSystem.PrintGreen($"Överföring begärd.\n\n{amount} {Accounts[moveFrom - 1].Currency} överförs från {Accounts[moveFrom - 1].Name} till {BankSystem.AllUsers[index].Username} klockan {SpecTime4}.\n");
-                            }
+
+                            BankSystem.CenterColor("Du har för lite pengar", false, "Red");
+                            notEnoughMoney = true;
+                            BankSystem.Return();
                         }
-                        notEnoughMoney = false;
-                        Log.Add($"Överföring begärd: {DateTime.Now} \n{amount} {Accounts[moveFrom - 1].Currency} fördes över från {Accounts[moveFrom - 1].Name} till {BankSystem.AllUsers[index].Username}\n");
-                        BankSystem.Return();
-                        return false;
-                    }
-                    else
-                    {
-                        Console.Clear();
-                        Console.WriteLine("Du har för lite pengar");
-                        notEnoughMoney = true;
                     }
                 }
             }
             else
             {
-                Console.Clear();
-                Console.WriteLine("användare ej hittad");
+                BankSystem.CenterColor("Användarnamn kunde ej hittas", false, "Red");
+                BankSystem.Return();
             }
             return true;
         }
@@ -295,7 +273,8 @@ namespace Project_Lions
             do
             {
                 Console.Clear();
-                BankSystem.PrintYellow("SKAPA NYTT KONTO\n");
+                //BankSystem.PrintYellow("SKAPA NYTT KONTO\n");
+                BankSystem.CenterColor("SKAPA NYTT KONTO\n", true, "Yellow");
                 Console.WriteLine("[1] Öppna ett vanligt konto\n[2] Öppna ett sparkonto\n[3] Beräkna med vår ränta hur mycket du kan tjäna på ditt sparkonto");
                 var keyInfo = Console.ReadKey(intercept: true);
                 select = keyInfo.Key;
@@ -304,22 +283,23 @@ namespace Project_Lions
                     case ConsoleKey.NumPad1:
                     case ConsoleKey.D1:
                         Console.Clear();
-                        BankSystem.PrintYellow("SKAPA NYTT KONTO");
-                        BankSystem.PrintDarkYellow("Vald Kontotyp: Vanligt Konton\n");
+                        BankSystem.CenterColor("SKAPA NYTT KONTO\n", true, "Yellow");
+                        //BankSystem.PrintDarkYellow("Vald Kontotyp: Vanligt Konton\n");
+                        BankSystem.CenterColor("Vald Kontotyp: Vanligt Konton\n",false,"DarkYellow");
                         Console.Write("Skriv in önskat namn på ditt nya konto: ");
                         string regAccountName = BankSystem.ShowInput();
                         if (regAccountName != "ESC")
                         {
                             Console.Clear();
-                            BankSystem.PrintYellow("SKAPA NYTT KONTO");
-                            BankSystem.PrintDarkYellow("Vald Kontotyp: Vanligt Konto\n");
+                            BankSystem.CenterColor("SKAPA NYTT KONTO\n", true, "Yellow");
+                            BankSystem.CenterColor("Vald Kontotyp: Vanligt Konton\n", false, "DarkYellow");
                             string tempCurrency = BankSystem.ChooseCurrency();
                             if (tempCurrency != "ESC")
                             {
                                 Accounts.Add(new Account { Balance = 0, Name = regAccountName, Currency = tempCurrency });
                                 Console.Clear();
-                                BankSystem.PrintYellow("SKAPA NYTT KONTO");
-                                BankSystem.PrintDarkYellow("Vald Kontotyp: Vanligt Konto\n");
+                                BankSystem.CenterColor("SKAPA NYTT KONTO\n", true, "Yellow");
+                                BankSystem.CenterColor("Vald Kontotyp: Vanligt Konton\n", false, "DarkYellow");
                                 Console.WriteLine($"Kontot {regAccountName} har skapats!");
                                 Log.Add($"\n{DateTime.Now} \nKontot {regAccountName} skapades, som håller valutan {Accounts[Accounts.Count - 1].Currency}");
                                 loop = false;
@@ -333,7 +313,8 @@ namespace Project_Lions
                     case ConsoleKey.NumPad2:
                     case ConsoleKey.D2:
                         Console.Clear();
-                        BankSystem.PrintYellow("SKAPA NYTT SPARKONTO\n");
+                        //BankSystem.PrintYellow("SKAPA NYTT SPARKONTO\n");
+                        BankSystem.CenterColor("SKAPA NYTT SPARKONTO\n", true, "Yellow");
                         Console.Write("Välj typ av Sparkonto:" +
                                   "\n\n[1] Fasträntekonto, 1,10 % ränta årsbasis, bindningstid 1år" +
                                     "\n[2] Fasträntekonto, 1,40 % ränta årsbasis, bindningstid 2år" +
@@ -374,23 +355,26 @@ namespace Project_Lions
                         if (select != ConsoleKey.Escape)
                         {
                             Console.Clear();
-                            BankSystem.PrintYellow($"SKAPA NYTT SPARKONTO");
-                            BankSystem.PrintDarkYellow($"Vald kontotyp: {accType}\n");
+                            //BankSystem.PrintYellow($"SKAPA NYTT SPARKONTO");
+                            BankSystem.CenterColor("SKAPA NYTT SPARKONTO\n", true, "Yellow");
+                            //BankSystem.PrintDarkYellow($"Vald kontotyp: {accType}\n");
+                            BankSystem.CenterColor($"Vald kontotyp: {accType}\n", false, "DarkYellow");
                             Console.Write($"Skriv in önskat namn på ditt nya sparkonto: ");
                             string saveAccountName = BankSystem.ShowInput();
                             if (saveAccountName != "ESC")
                             {
                                 Console.Clear();
-                                BankSystem.PrintYellow($"SKAPA NYTT SPARKONTO");
-                                BankSystem.PrintDarkYellow($"Vald kontotyp: {accType}\n");
+                                //BankSystem.PrintYellow($"SKAPA NYTT SPARKONTO");
+                                BankSystem.CenterColor("SKAPA NYTT SPARKONTO\n", true, "Yellow");
+                                BankSystem.CenterColor($"Vald kontotyp: {accType}\n", false, "DarkYellow");
                                 string tempCurrency = BankSystem.ChooseCurrency();
                                 if (tempCurrency != "ESC")
                                 {
                                     Accounts.Add(new Account { Balance = 0, Name = saveAccountName, Currency = tempCurrency, Interest = tempInterest });
                                     Console.Clear();
                                     Console.Clear();
-                                    BankSystem.PrintYellow($"SKAPA NYTT SPARKONTO");
-                                    BankSystem.PrintDarkYellow($"Vald kontotyp: {accType}\n");
+                                    BankSystem.CenterColor("SKAPA NYTT SPARKONTO\n", true, "Yellow");
+                                    BankSystem.CenterColor($"Vald kontotyp: {accType}\n", false, "DarkYellow");
                                     Console.WriteLine($"Sparkontot {saveAccountName} har skapats!");
                                     Log.Add($"\n{DateTime.Now} \nSparkontot {saveAccountName} skapades, som håller valutan {Accounts[Accounts.Count - 1].Currency} och har en ränta på {decimal.Round((tempInterest * 100), 2)}%");
                                     loop = false;
@@ -501,10 +485,11 @@ namespace Project_Lions
         public void PrintLog()
         {
             Console.Clear();
-            BankSystem.PrintYellow("KONTOHISTORIK");
+            //BankSystem.PrintYellow("KONTOHISTORIK");
+            BankSystem.CenterColor("KONTOHISTORIK\n", true, "Yellow");
             if (Log.Count > 0)
             {
-                BankSystem.PrintDarkYellow("Alla föregående transaktioner, senaste till första:");
+                BankSystem.CenterColor("Alla föregående transaktioner, senaste till första:", false, "DarkYellow");
                 for (int i = Log.Count - 1; i >= 0; i--)
                 {
                     Console.WriteLine(Log[i]);

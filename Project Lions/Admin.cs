@@ -9,6 +9,8 @@ namespace Project_Lions
         public static decimal SekRate = 1m;
         public static decimal DollarRate = 9.1m;
         public static decimal EurRate = 10.25m;
+
+        public static decimal InterestRate = 0.006m;
         public Admin(string admUsername, string admPassword, bool isAdmin)
         {
             this.Username = admUsername;
@@ -18,9 +20,8 @@ namespace Project_Lions
         public static void CurrencyRates()
         {
             Console.Clear();
-            Console.WriteLine("[1] Ändra Dollarvärde");
-            Console.WriteLine("[2] Ändra Eurovärde");
-            Console.WriteLine("[3] Ändra valutakurs");
+            BankSystem.CenterColor("ÄNDRA VALUTAKURS\n", true, "Yellow");
+            Console.WriteLine("[1] Ändra Dollarvärde\n[2] Ändra Eurovärde");
             int currencyMenu;
             int.TryParse(Console.ReadLine(), out currencyMenu);
             Console.WriteLine();
@@ -47,5 +48,16 @@ namespace Project_Lions
                     break;
             }
         }
+        public static void ChangeInterestRate()
+        {
+            Console.Clear();
+            BankSystem.CenterColor("ÄNDRA BANKENS RÖRLIGA RÄNTA\n", true, "Yellow");
+            Console.WriteLine($"Aktuell ränta:  {decimal.Round((InterestRate*100),2) } %");
+            Console.Write("Ange ny ränta: ");
+            InterestRate = (Convert.ToDecimal(Console.ReadLine())/100);
+            Console.WriteLine($"Bankens nya ränta är nu:   {decimal.Round((InterestRate * 100), 2)} %");
+            BankSystem.Return();
+        }
+
     }
 }

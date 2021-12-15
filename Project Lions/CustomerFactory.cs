@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Project_Lions
 {
-    static class UserFactory
+    static class CustomerFactory
     {
         public static List<string> nums = new List<string>();
         public static List<string> uppercase = new List<string>();
@@ -16,7 +16,7 @@ namespace Project_Lions
         static string passDontMatch = "Lösenordsfälten matchar inte. Försök igen.";
         static string passTooShort = "Lösenordet är för kort. Det måste vara minst 8 karaktärer långt.";
         static string passError;
-        static UserFactory()
+        static CustomerFactory()
         {
             uppercase.AddRange("A B C D E F G H I J K L M N O P Q R S T U V W X Y Z Å Ä Ö".Split(" "));
             lowercase.AddRange("A B C D E F G H I J K L M N O P Q R S T U V W X Y Z Å Ä Ö".ToLower().Split(" "));
@@ -25,7 +25,7 @@ namespace Project_Lions
             notChar.AddRange(uppercase);
             notChar.AddRange(nums);
         }
-        public static void CreateNewUser()
+        public static void CreateNewCustomer()
         {
             bool success = false;
             string usernameTry;
@@ -35,22 +35,24 @@ namespace Project_Lions
             while (!success)
             {
                 Console.Clear();
+                BankSystem.CenterColor("SKAPA NY ANVÄNDARE", true, "Yellow");
+                Console.WriteLine();
                 foreach (string section in createAccountMenu)
                 {
                     Console.WriteLine(section);
                 }
                 if (fail)
                 {
-                    Console.SetCursorPosition(0, 1);
+                    Console.SetCursorPosition(0, 3);
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.Write(passError);
                     Console.ResetColor();
                 }
-                Console.SetCursorPosition(14, 2);
+                Console.SetCursorPosition(14, 4);
                 usernameTry = Console.ReadLine().Trim();
-                Console.SetCursorPosition(10, 3);
+                Console.SetCursorPosition(10, 5);
                 passwordTry = Console.ReadLine();
-                Console.SetCursorPosition(19, 4);
+                Console.SetCursorPosition(19, 6);
                 passConfTry = Console.ReadLine();
                 if (UsernameIsVacant(usernameTry, BankSystem.AllCustomers))
                 {
@@ -70,6 +72,7 @@ namespace Project_Lions
                                 BankSystem.AllCustomers.Add(new Customer(usernameTry, passwordTry, new Account { Name = "Lönekonto", Balance = 10000, Currency = "SEK" }));
                                 Console.WriteLine("Kontot {0} har skapats!", usernameTry);
                                 Console.ReadLine();
+                                Console.Clear();
                             }
                         }
                         else

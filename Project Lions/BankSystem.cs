@@ -32,7 +32,7 @@ namespace Project_Lions
                 {
                     if (user.Password == passTry)
                     {
-                        Console.WriteLine("Login lyckades!");
+
                         user.LoginCounter = 0;
                         Console.Clear();
                         return true;
@@ -66,31 +66,24 @@ namespace Project_Lions
             {
                 if (PassCheck(user, userTry, passTry))
                 {
+                    LoadingAnimation("Loggar in");
                     MainMenu(user);
+                   
                     return true;
+
                 }
             }
             foreach (Admin admin in AllAdmins)
             {
                 if (PassCheck(admin, userTry, passTry))
                 {
+                    LoadingAnimation("Loggar in");
                     AdminMenu(admin);
+                    
                     return true;
                 }
             }
             return false;
-        }
-        public static void ExitAppFunc()
-        {
-            Console.Clear();
-            Console.Write("Stänger ner programmet");
-            for (int j = 0; j < 10; j++)
-            {
-                Console.Write(".");
-                Thread.Sleep(200);
-            }
-            Console.WriteLine();
-            Environment.Exit(0);
         }
         public static void LogInMenu()
         {
@@ -192,24 +185,26 @@ namespace Project_Lions
         }
         public static void AdminMenu(Admin admin)
         {
-
+            
             bool adminLoggedin = true;        
-            Console.WriteLine("Välkommen " + admin.Username);
-            Console.WriteLine("Inloggad som admin");
-            Console.WriteLine();
             while (adminLoggedin)
             {
+                Console.Clear();
+                CenterColor($"Inloggad som {admin.Username} ", true, "Yellow");
+                Console.WriteLine();
                 Console.WriteLine("[1] Se alla kunder");
                 Console.WriteLine("[2] Registrera ny kund");
                 Console.WriteLine("[3] Ändra valutakurs");
-                Console.WriteLine("[4] Logga ut");
+                Console.WriteLine("[4] Ändra bankens rörliga ränta");
+                Console.WriteLine("[5] Logga ut");
                 int adminmenu;
                 int.TryParse(Console.ReadLine(), out adminmenu);
                 switch (adminmenu)
                 {
                     case 1:
                         Console.Clear();
-                        Console.WriteLine("Alla användare");
+                        CenterColor("Alla användare",true,"Yellow");
+                        Console.WriteLine();
                         foreach (User allusers in AllCustomers)
                         {
                             Console.WriteLine(allusers);
@@ -217,21 +212,17 @@ namespace Project_Lions
                         Return();
                         break;
                     case 2:
-                        UserFactory.CreateNewUser();
+                        CustomerFactory.CreateNewCustomer();
                         break;
                     case 3:
-                        Console.WriteLine("ändra valutakurs");
                         Admin.CurrencyRates();
                         break;
                     case 4:
+                        Admin.ChangeInterestRate();
+                        break;
+                    case 5:
                         Console.Clear();
-                        Console.Write("Du loggas ut");
-                        for (int j = 0; j < 10; j++)
-                        {
-                            Console.Write(".");
-                            Thread.Sleep(200);
-                        }
-                        Console.WriteLine();
+                        LoggingOut();
                         adminLoggedin = false;
                         break;
                     default:
@@ -246,7 +237,7 @@ namespace Project_Lions
             while (loggedIn)
             {
                 Console.Clear();
-                CenterColor($"Välkommen {user.Username}", true, "Yellow");
+                CenterColor($"Inloggad som {user.Username}", true, "Yellow");
                 PrintMenu();
                 var keyInfo = Console.ReadKey(intercept: true);
                 ConsoleKey menuChoice = keyInfo.Key;
@@ -276,13 +267,7 @@ namespace Project_Lions
                     case ConsoleKey.D6:
                     case ConsoleKey.Escape:
                         Console.Clear();
-                        Console.Write("Du loggas ut");
-                        for (int j = 0; j < 10; j++)
-                        {
-                            Console.Write(".");
-                            Thread.Sleep(200);
-                        }
-                        Console.WriteLine();
+                        LoggingOut();
                         loggedIn = false;
                         break;
                     default:
@@ -294,8 +279,9 @@ namespace Project_Lions
         {
             Console.WindowHeight = 40;
             Console.WindowWidth = 75;
-            
+
             PrintLogo();
+            Console.WindowWidth = 85;
             bool loop = true;
             ConsoleKey selector;
             while (loop)
@@ -320,13 +306,17 @@ namespace Project_Lions
                 else
                 {
                     Console.Clear();
-                    Console.Write("Programmet stängs ner");
-                    for (int j = 0; j < 10; j++)
+                    Console.SetCursorPosition(47, 15);
+                    CenterColor("Programmet stängs ner", true, "Red");
+                    Console.SetCursorPosition(53, 15);
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    for (int j = 0; j < 3; j++)
                     {
                         Console.Write(".");
-                        Thread.Sleep(200);
+                        Thread.Sleep(600);
                     }
                     Console.WriteLine();
+                    Environment.Exit(0);
                     loop = false;
                 }
             }
@@ -389,7 +379,7 @@ namespace Project_Lions
         }
         public static bool CheckInterest()
         {
-            decimal varIntRate = 0.006m;
+            decimal varIntRate = Admin.InterestRate;
             decimal fixIntRate1 = 0.011m;
             decimal fixIntRate2 = 0.014m;
             Console.Clear();
@@ -422,7 +412,7 @@ namespace Project_Lions
                                    $"\n    På {numberOfYears} år kommer dina {saveAccAmount}kr att bli {CalcInterest(fixIntRate1, numberOfYears, saveAccAmount)} kr" +
                                   "\n\n[2] Fasträntekonto, 1,40 % ränta årsbasis, bindningstid 2år." +
                                    $"\n    På {numberOfYears} år kommer dina {saveAccAmount}kr att bli {CalcInterest(fixIntRate2, numberOfYears, saveAccAmount)} kr" +
-                                  "\n\n[3] Rörligträntekonto, aktuellränta: 0,60 % årsbasis, ingen bindningstid" +
+                                  $"\n\n[3] Rörligträntekonto, aktuellränta: {decimal.Round((Admin.InterestRate * 100), 2)} årsbasis, ingen bindningstid" +
                                    $"\n    På {numberOfYears} år kommer dina {saveAccAmount}kr att bli {CalcInterest(varIntRate, numberOfYears, saveAccAmount)} kr");
                     return false;
                 }
@@ -604,6 +594,51 @@ namespace Project_Lions
                 Thread.Sleep(400);
             }
         }
+
+        static void LoadingAnimation(string tempText = "", int tempSleepTime = 10)
+        {   
+            for (int i = 0; i <= 99; i++)
+            {
+                Console.SetCursorPosition(0, 15);
+                CenterColor($"{tempText}: {i}%   ",true);
+                Thread.Sleep(tempSleepTime);
+
+            }
+            Console.SetCursorPosition(0, 15);
+            CenterColor($"{tempText}: 100%   ",true,"Green");
+            Thread.Sleep(1000);
+            
+            
+
+        } // Titel utskrift och en animation för Progress
+        static void LoggingOut()
+        {
+            Console.SetCursorPosition(0, 15); 
+            CenterColor("Loggas ut", true, "Green");
+            Console.SetCursorPosition(47, 15);
+            Console.ForegroundColor = ConsoleColor.Green;
+            for (int j = 0; j < 3; j++)
+            {
+                Console.Write(".");
+                Thread.Sleep(600);
+            }
+            
+        }
+        static void Exit()
+        {
+            Console.SetCursorPosition(0, 15);
+            CenterColor("Programmet stängs ner", true, "Red");
+            Console.SetCursorPosition(53, 15);
+            Console.ForegroundColor = ConsoleColor.Green;
+            for (int j = 0; j < 3; j++)
+            {
+                Console.Write(".");
+                Thread.Sleep(600);
+            }
+
+            Environment.Exit(0);
+        }
+
 
     }
 }

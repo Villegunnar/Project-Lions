@@ -9,7 +9,6 @@ namespace Project_Lions
     {
         public string Username { get; set; }
         public string Password { get; set; }
-        public bool IsAdmin { get; set; }
         public List<Account> Accounts { get; set; }
         public int LoginCounter { get; set; }
         public bool LockedOut { get; set; }

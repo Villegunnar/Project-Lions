@@ -35,8 +35,7 @@ namespace Project_Lions
             while (!success)
             {
                 Console.Clear();
-                BankSystem.CenterColor("SKAPA NY ANVÄNDARE", true, "Yellow");
-                Console.WriteLine();
+                BankSystem.CenterColor("SKAPA NY ANVÄNDARE\n", true, "Yellow");
                 foreach (string section in createAccountMenu)
                 {
                     Console.WriteLine(section);
@@ -49,11 +48,14 @@ namespace Project_Lions
                     Console.ResetColor();
                 }
                 Console.SetCursorPosition(14, 4);
-                usernameTry = Console.ReadLine().Trim();
+                usernameTry = BankSystem.ShowInput().Trim();
+                if (usernameTry == "ESC") { break; }
                 Console.SetCursorPosition(10, 5);
-                passwordTry = Console.ReadLine();
+                passwordTry = BankSystem.ShowInput();
+                if (passwordTry == "ESC") { break; }
                 Console.SetCursorPosition(19, 6);
-                passConfTry = Console.ReadLine();
+                passConfTry = BankSystem.ShowInput();
+                if (passConfTry == "ESC") { break; }
                 if (UsernameIsVacant(usernameTry, BankSystem.AllCustomers))
                 {
                     if (passwordTry == passConfTry)
@@ -69,10 +71,10 @@ namespace Project_Lions
                             else
                             {
                                 Console.Clear();
+                                BankSystem.CenterColor("SKAPA NY ANVÄNDARE\n", true, "Yellow");
                                 BankSystem.AllCustomers.Add(new Customer(usernameTry, passwordTry, new Account { Name = "Lönekonto", Balance = 10000, Currency = "SEK" }));
-                                Console.WriteLine("Kontot {0} har skapats!", usernameTry);
-                                Console.ReadLine();
-                                Console.Clear();
+                                BankSystem.CenterColor($"Kontot {usernameTry} har skapats!", false, "Green");
+                                BankSystem.Return();
                             }
                         }
                         else

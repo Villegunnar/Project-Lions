@@ -11,7 +11,6 @@ namespace Project_Lions
         {
             this.Username = tempUsername;
             this.Password = tempPassword;
-            this.IsAdmin = false;
             Accounts = new List<Account>();
             Log = new List<string>();
             Accounts.Add(baseAccount);
@@ -507,7 +506,6 @@ namespace Project_Lions
                 }
             }
         }
-
         public void PrintLog()
         {
             Console.Clear();

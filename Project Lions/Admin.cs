@@ -11,52 +11,108 @@ namespace Project_Lions
         public static decimal EurRate = 10.25m;
 
         public static decimal InterestRate = 0.006m;
-        public Admin(string admUsername, string admPassword, bool isAdmin)
+        public Admin(string admUsername, string admPassword)
         {
             this.Username = admUsername;
             this.Password = admPassword;
-            this.IsAdmin = true;
         }
         public static void CurrencyRates()
         {
-            Console.Clear();
-            BankSystem.CenterColor("ÄNDRA VALUTAKURS\n", true, "Yellow");
-            Console.WriteLine("[1] Ändra Dollarvärde\n[2] Ändra Eurovärde");
-            int currencyMenu;
-            int.TryParse(Console.ReadLine(), out currencyMenu);
-            Console.WriteLine();
-            switch (currencyMenu)
+            bool loop = true;
+            while (loop)
             {
-                case 1:
-                    Console.Clear();
-                    Console.WriteLine("Aktuellt dollarvärde: " + DollarRate);
-                    Console.Write("Ändra Dollarvärde: ");
-                    DollarRate = Convert.ToDecimal(Console.ReadLine());
-                    Console.WriteLine("Nytt dollarvärde: " + DollarRate);
-                    BankSystem.Return();
-                    break;
-                case 2:
-                    Console.Clear();
-                    Console.WriteLine("Aktuellt Euroarvärde: " + EurRate);
-                    Console.Write("Ändra Eurovärde: ");
-                    EurRate = Convert.ToDecimal(Console.ReadLine());
-                    Console.WriteLine("Nytt Eurovärde: " + EurRate);
-                    BankSystem.Return();
-                    break;
-                default:
-                    Console.WriteLine("Ogiltigt alternativ...");
-                    break;
+                Console.Clear();
+                BankSystem.CenterColor("ÄNDRA VALUTAKURS\n", true, "Yellow");
+                Console.WriteLine("[1] Ändra Dollarvärde\n[2] Ändra Eurovärde\n");
+                ConsoleKey menuChoice = Console.ReadKey(intercept: true).Key;
+                switch (menuChoice)
+                {
+                    case ConsoleKey.NumPad1:
+                    case ConsoleKey.D1:
+                        Console.Clear();
+                        BankSystem.CenterColor("ÄNDRA VALUTAKURS\n", true, "Yellow");
+                        Console.Write($"Aktuellt Dollarvärde: {DollarRate}\nÄndra Dollarvärde: ");
+                        decimal tempDollarRate = 0m;
+                        string dollarAmountIn = BankSystem.ShowInput();
+                        while ((!decimal.TryParse(dollarAmountIn, out tempDollarRate)) && dollarAmountIn != "ESC")
+                        {
+                            Console.Clear();
+                            BankSystem.CenterColor("ÄNDRA VALUTAKURS\n", true, "Yellow");
+                            Console.Write($"Aktuellt Dollarvärde: {DollarRate}\nÄndra Dollarvärde: ");
+                            dollarAmountIn = BankSystem.ShowInput();
+                        }
+                        if (dollarAmountIn != "ESC")
+                        {
+                            Console.Clear();
+                            DollarRate = tempDollarRate;
+                            BankSystem.CenterColor("ÄNDRA VALUTAKURS\n", true, "Yellow");
+                            Console.WriteLine("Nytt Dollarvärde: " + DollarRate);
+                            loop = false;
+                            BankSystem.Return();
+                        }
+                        break;
+                    case ConsoleKey.NumPad2:
+                    case ConsoleKey.D2:
+                        Console.Clear();
+                        BankSystem.CenterColor("ÄNDRA VALUTAKURS\n", true, "Yellow");
+                        Console.Write($"Aktuellt Eurovärde: {EurRate}\nÄndra Eurovärde: ");
+                        decimal tempEuroRate = 0m;
+                        string euroAmountIn = BankSystem.ShowInput();
+                        while ((!decimal.TryParse(euroAmountIn, out tempEuroRate)) && euroAmountIn != "ESC")
+                        {
+                            Console.Clear();
+                            BankSystem.CenterColor("ÄNDRA VALUTAKURS\n", true, "Yellow");
+                            Console.Write($"Aktuellt Eurovärde: {EurRate}\nÄndra Eurovärde: ");
+                            euroAmountIn = BankSystem.ShowInput();
+                        }
+                        if (euroAmountIn != "ESC")
+                        {
+                            Console.Clear();
+                            EurRate = tempEuroRate;
+                            BankSystem.CenterColor("ÄNDRA VALUTAKURS\n", true, "Yellow");
+                            Console.WriteLine("Nytt Eurovärde: " + EurRate);
+                            loop = false;
+                            BankSystem.Return();
+                        }
+                        break;
+                    case ConsoleKey.Escape:
+                        loop = false;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
         public static void ChangeInterestRate()
         {
-            Console.Clear();
-            BankSystem.CenterColor("ÄNDRA BANKENS RÖRLIGA RÄNTA\n", true, "Yellow");
-            Console.WriteLine($"Aktuell ränta:  {decimal.Round((InterestRate*100),2) } %");
-            Console.Write("Ange ny ränta: ");
-            InterestRate = (Convert.ToDecimal(Console.ReadLine())/100);
-            Console.WriteLine($"Bankens nya ränta är nu:   {decimal.Round((InterestRate * 100), 2)} %");
-            BankSystem.Return();
+            bool loop = true;
+            while (loop)
+            {
+                Console.Clear();
+                BankSystem.CenterColor("ÄNDRA BANKENS RÖRLIGA RÄNTA\n", true, "Yellow");
+                Console.WriteLine($"Aktuell ränta: {decimal.Round((InterestRate * 100), 2) } %");
+                Console.Write("Ange ny ränta: ");
+                string intRateIn = BankSystem.ShowInput();
+                decimal tempIntRate = 0m;
+                while (!(decimal.TryParse(intRateIn, out tempIntRate)) && intRateIn != "ESC")
+                {
+                    Console.Clear();
+                    BankSystem.CenterColor("ÄNDRA BANKENS RÖRLIGA RÄNTA\n", true, "Yellow");
+                    Console.WriteLine($"Aktuell ränta: {decimal.Round((InterestRate * 100), 2) } %");
+                    Console.Write("Ange ny ränta: ");
+                    intRateIn = BankSystem.ShowInput();
+                }
+                if (intRateIn != "ESC")
+                {
+                    InterestRate = (tempIntRate / 100);
+                    Console.Clear();
+                    BankSystem.CenterColor("ÄNDRA BANKENS RÖRLIGA RÄNTA\n", true, "Yellow");
+                    Console.WriteLine($"Bankens nya ränta är nu: {decimal.Round((InterestRate * 100), 2)} %");
+                    loop = false;
+                    BankSystem.Return();
+                }
+                loop = false;
+            }
         }
 
     }

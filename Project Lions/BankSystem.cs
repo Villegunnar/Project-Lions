@@ -12,17 +12,19 @@ namespace Project_Lions
         public static List<Admin> AllAdmins = new List<Admin>();
         static BankSystem()
         {
-            Customer Viktor = new Customer("Viktor", "Viktor123!", new Account { Balance = 100, Name = "Lönekonto", Currency = "SEK" });
+            Customer Viktor = new Customer("Viktor", "Viktor123!", new Account { Balance = 50000, Name = "Lönekonto", Currency = "SEK" });
             Viktor.Accounts.AddRange(new List<Account> { new Account { Balance = 2000, Name = "Investeringskoto", Currency = "SEK" } });
-            Customer Lukas = new Customer("Lukas", "Lukas123!", new Account { Balance = 200, Name = "Lönekonto", Currency = "SEK" });
-            Lukas.Accounts.AddRange(new List<Account> { new Account { Balance = 3000, Name = "Ölkonto", Currency = "SEK" } });
-            Customer Erik = new Customer("Erik", "Erik123!", new Account { Balance = 300, Name = "Lönekonto", Currency = "SEK" });
-            Erik.Accounts.AddRange(new List<Account> { new Account { Balance = 1003, Name = "Eventkonto", Currency = "SEK" } });
-            Admin Anas = new Admin("Anas", "Anas123!", true);
+            Customer Lukas = new Customer("Lukas", "Lukas123!", new Account { Balance = 50000, Name = "Lönekonto", Currency = "SEK" });
+            Lukas.Accounts.AddRange(new List<Account> { new Account { Balance = 32000, Name = "Ölkonto", Currency = "SEK" } });
+            Customer Erik = new Customer("Erik", "Erik123!", new Account { Balance = 50000, Name = "Lönekonto", Currency = "SEK" });
+            Erik.Accounts.AddRange(new List<Account> { new Account { Balance = 13003, Name = "Eventkonto", Currency = "SEK" } });
+            Admin Anas = new Admin("Anas", "Anas123!");
+            Admin Tobias = new Admin("Tobias", "Tobias123!");
             AllCustomers.Add(Erik);
             AllCustomers.Add(Viktor);
             AllCustomers.Add(Lukas);
             AllAdmins.Add(Anas);
+            AllAdmins.Add(Tobias);
         }
         public static bool PassCheck(User user, string userTry, string passTry)
         {
@@ -84,6 +86,20 @@ namespace Project_Lions
                 }
             }
             return false;
+        }
+        static void Exit()
+        {
+            Console.SetCursorPosition(0, 15);
+            CenterColor("Programmet stängs ner", true, "Red");
+            Console.SetCursorPosition(53, 15);
+            Console.ForegroundColor = ConsoleColor.Green;
+            for (int j = 0; j < 3; j++)
+            {
+                Console.Write(".");
+                Thread.Sleep(600);
+            }
+
+            Environment.Exit(0);
         }
         public static void LogInMenu()
         {
@@ -185,25 +201,19 @@ namespace Project_Lions
         }
         public static void AdminMenu(Admin admin)
         {
-            
-            bool adminLoggedin = true;        
+            bool adminLoggedin = true;
             while (adminLoggedin)
             {
                 Console.Clear();
                 CenterColor($"Inloggad som {admin.Username} ", true, "Yellow");
-                Console.WriteLine();
-                Console.WriteLine("[1] Se alla kunder");
-                Console.WriteLine("[2] Registrera ny kund");
-                Console.WriteLine("[3] Ändra valutakurs");
-                Console.WriteLine("[4] Ändra bankens rörliga ränta");
-                Console.WriteLine("[5] Logga ut");
-                int adminmenu;
-                int.TryParse(Console.ReadLine(), out adminmenu);
-                switch (adminmenu)
+                Console.WriteLine("\n[1] Se alla kunder\n[2] Registrera ny kund\n[3] Ändra valutakurs\n[4] Ändra bankens rörliga ränta\n[5] Logga ut");
+                ConsoleKey menuChoice = Console.ReadKey(intercept: true).Key;
+                switch (menuChoice)
                 {
-                    case 1:
+                    case ConsoleKey.NumPad1:
+                    case ConsoleKey.D1:
                         Console.Clear();
-                        CenterColor("Alla användare",true,"Yellow");
+                        CenterColor("Alla användare", true, "Yellow");
                         Console.WriteLine();
                         foreach (User allusers in AllCustomers)
                         {
@@ -211,22 +221,26 @@ namespace Project_Lions
                         }
                         Return();
                         break;
-                    case 2:
+                    case ConsoleKey.NumPad2:
+                    case ConsoleKey.D2:
                         CustomerFactory.CreateNewCustomer();
                         break;
-                    case 3:
+                    case ConsoleKey.NumPad3:
+                    case ConsoleKey.D3:
                         Admin.CurrencyRates();
                         break;
-                    case 4:
+                    case ConsoleKey.NumPad4:
+                    case ConsoleKey.D4:
                         Admin.ChangeInterestRate();
                         break;
-                    case 5:
+                    case ConsoleKey.NumPad5:
+                    case ConsoleKey.D5:
+                    case ConsoleKey.Escape:
                         Console.Clear();
                         LoggingOut();
                         adminLoggedin = false;
                         break;
                     default:
-                        Console.WriteLine("Ogiltigt alternativ");
                         return;
                 }
             }
@@ -457,7 +471,6 @@ namespace Project_Lions
                 }
             } while (loop);
         }
-
         public static void CenterColor(string text, bool Center, string color = "White")
         {
             if (Center)
@@ -594,8 +607,7 @@ namespace Project_Lions
                 Thread.Sleep(400);
             }
         }
-
-        static void LoadingAnimation(string tempText = "", int tempSleepTime = 10)
+        public static void LoadingAnimation(string tempText = "", int tempSleepTime = 10)
         {   
             for (int i = 0; i <= 99; i++)
             {
@@ -610,8 +622,8 @@ namespace Project_Lions
             
             
 
-        } // Titel utskrift och en animation för Progress
-        static void LoggingOut()
+        } 
+        public static void LoggingOut()
         {
             Console.SetCursorPosition(0, 15); 
             CenterColor("Loggas ut", true, "Green");
@@ -624,21 +636,6 @@ namespace Project_Lions
             }
             
         }
-        static void Exit()
-        {
-            Console.SetCursorPosition(0, 15);
-            CenterColor("Programmet stängs ner", true, "Red");
-            Console.SetCursorPosition(53, 15);
-            Console.ForegroundColor = ConsoleColor.Green;
-            for (int j = 0; j < 3; j++)
-            {
-                Console.Write(".");
-                Thread.Sleep(600);
-            }
-
-            Environment.Exit(0);
-        }
-
 
     }
 }

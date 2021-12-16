@@ -1,4 +1,5 @@
 Link to board: https://www.notion.so/Team-Lion-Bank-Inc-9e63f1a7658646d093e6c2aaa2adf076
+
 link to UML diagram: https://lucid.app/lucidchart/3d043684-a710-4f1c-a8f6-24bd73a9f82f/edit?beaconFlowId=0EBE2AEE0948E4E0&invitationId=inv_3cc35165-fbb8-42c6-8295-dd8b3913eb91&page=0_0#
 
 Readme File to explain the basic structure of the syntax. And also grov explain the different functions of the program, classes, methods etc.

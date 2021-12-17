@@ -3,6 +3,16 @@ Link to board: https://www.notion.so/Team-Lion-Bank-Inc-9e63f1a7658646d093e6c2aa
 ![Lion Bank Inc  - classes](https://user-images.githubusercontent.com/91311247/146573842-0b9e5a80-72dc-4042-823b-dcadd4036b46.png)
 Readme File to explain the basic structure of the syntax. And also grov explain the different functions of the program, classes, methods etc.
 
+CONTRIBUTORS 
+
+    Viktor Gunnarsson, https://github.com/Villegunnar
+    Lucas Rose, https://github.com/Luksros
+    Erik Norell, https://github.com/Erik9507
+    Erik Risholm, https://github.com/Riceholme
+
+
+
+
 -Description of all the classes
 
 1. User: An abstract parent class named "User" made as a blueprint for Customer-class and Admin-class.

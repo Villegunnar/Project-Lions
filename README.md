@@ -1,7 +1,7 @@
 Link to board: https://www.notion.so/Team-Lion-Bank-Inc-9e63f1a7658646d093e6c2aaa2adf076
 
 link to UML diagram: https://lucid.app/lucidchart/3d043684-a710-4f1c-a8f6-24bd73a9f82f/edit?invitationId=inv_3cc35165-fbb8-42c6-8295-dd8b3913eb91&page=0_0#
-
+![Lion Bank Inc  - classes](https://user-images.githubusercontent.com/91311247/146573842-0b9e5a80-72dc-4042-823b-dcadd4036b46.png)
 Readme File to explain the basic structure of the syntax. And also grov explain the different functions of the program, classes, methods etc.
 
 -Description of all the classes
@@ -13,3 +13,4 @@ Readme File to explain the basic structure of the syntax. And also grov explain 
 5. Account: A class that contains properties for the list with "Account" in Customer-class. Properties such as name, balance, currency and interest.
 6. BankSystem: A class that contains the majority of methods that runs the "system", mainly "menus" and constructor that holds all the users (Customer and Admin). Basically the whole program runs from this class. It contains a list with "Customer" and a list with "Admins".
 7. Program: The already existing class with the "Main-method" to initiate and run our system.
+

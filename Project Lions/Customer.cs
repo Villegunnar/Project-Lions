@@ -150,7 +150,7 @@ namespace Project_Lions
             DateTime time = new DateTime();
             TimeSpan timeUntilExe = SpecTime1 - DateTime.Now;
             decimal amount;
-            BankSystem.CenterColor("ÖVERFÖRING TILL ANNAN ANVÄNDARE\n",true,"Yellow");
+            BankSystem.CenterColor("ÖVERFÖRING TILL ANNAN ANVÄNDARE\n", true, "Yellow");
             Console.Write("Skriv in användaren du vill föra över till: ");
             string usernameSearch = BankSystem.ShowInput();
             if (usernameSearch == "ESC") { return false; }
@@ -168,8 +168,8 @@ namespace Project_Lions
             if (userFound)
             {
                 Console.Clear();
-                BankSystem.CenterColor("ÖVERFÖRING TILL ANNAN ANVÄNDARE",true,"Yellow");
-                BankSystem.CenterColor($"Användare {usernameSearch} hittad!\n",false, "DarkYellow");
+                BankSystem.CenterColor("ÖVERFÖRING TILL ANNAN ANVÄNDARE", true, "Yellow");
+                BankSystem.CenterColor($"Användare {usernameSearch} hittad!\n", false, "DarkYellow");
                 for (int i = 0; i < Accounts.Count; i++)
                 {
                     Console.WriteLine($"[{i + 1}] {Accounts[i]}");
@@ -200,11 +200,11 @@ namespace Project_Lions
                     BankSystem.ClearLine();
                     if (amount > Accounts[moveFrom - 1].Balance)
                     {
-                        BankSystem.CenterColor("Du har inte tillräckligt med pengar för det",false,"Red");
+                        BankSystem.CenterColor("Du har inte tillräckligt med pengar för det", false, "Red");
                     }
                     else
                     {
-                        BankSystem.CenterColor("Ogiltig Input",false,"Red");
+                        BankSystem.CenterColor("Ogiltig Input", false, "Red");
                     }
                     Console.SetCursorPosition(39, 7);
                     amountIn = BankSystem.ShowInput();
@@ -231,49 +231,49 @@ namespace Project_Lions
                     {
                         timeUntilExe = SpecTime4 - DateTime.Now;
                         time = SpecTime4;
-                        Accounts[moveFrom - 1].Balance -= amount;
-                        Task.Delay(timeUntilExe).ContinueWith((x) => BankSystem.AllCustomers[index].Accounts[0].Balance += amount);
-                        var now = DateTime.Now;
-                        Task.Delay(timeUntilExe).ContinueWith((x) => Log.Add($"\n{time} \n{amount} {Accounts[moveFrom - 1].Currency} överfördes från {Accounts[moveFrom - 1].Name} till {BankSystem.AllCustomers[index].Username}"));
                     }
-                    else
-                    {
-                        if (DateTime.Now <= SpecTime1)
-                        {
-                            timeUntilExe = SpecTime1 - DateTime.Now;
-                            time = SpecTime1;
-                        }
-                        else if (DateTime.Now <= SpecTime2)
-                        {
-                            timeUntilExe = SpecTime2 - DateTime.Now;
-                            time = SpecTime2;
-                        }
-                        else if (DateTime.Now <= SpecTime3)
-                        {
-                            timeUntilExe = SpecTime3 - DateTime.Now;
-                            time = SpecTime3;
-                        }
-                        else if (DateTime.Now <= SpecTime4)
-                        {
-                            timeUntilExe = SpecTime4 - DateTime.Now;
-                            time = SpecTime4;
-                        }
-                        Accounts[moveFrom - 1].Balance -= amount;
-                        Task.Delay(timeUntilExe).ContinueWith((x) => BankSystem.AllCustomers[index].Accounts[0].Balance += BankSystem.CurrencyConverter(Accounts[moveFrom - 1].Currency, BankSystem.AllCustomers[index].Accounts[0].Currency, amount));
-                        var now = DateTime.Now;
-                        Task.Delay(timeUntilExe).ContinueWith((x) => Log.Add($"\n{SpecTime1} \n{amount} {Accounts[moveFrom - 1].Currency} överfördes från {Accounts[moveFrom - 1].Name} till {BankSystem.AllCustomers[index].Username}"));
-                    }
-                    Console.Clear();
-                    BankSystem.CenterColor("ÖVERFÖRING TILL ANNAN ANVÄNDARE\n",true,"Yellow");
-                    BankSystem.CenterColor($"Överföring begärd.\n\n{amount} {Accounts[moveFrom - 1].Currency} överförs från {Accounts[moveFrom - 1].Name} till {BankSystem.AllCustomers[index].Username} klockan {time}.\n",false,"Green");
-                    Log.Add($"\n{DateTime.Now} \nÖverföring begärd: {amount} {Accounts[moveFrom - 1].Currency} från {Accounts[moveFrom - 1].Name} till {BankSystem.AllCustomers[index].Username}");
-                    BankSystem.Return();
-                    return true;
+                    Accounts[moveFrom - 1].Balance -= amount;
+                    Task.Delay(timeUntilExe).ContinueWith((x) => BankSystem.AllCustomers[index].Accounts[0].Balance += amount);
+                    var now = DateTime.Now;
+                    Task.Delay(timeUntilExe).ContinueWith((x) => Log.Add($"\n{time} \n{amount} {Accounts[moveFrom - 1].Currency} överfördes från {Accounts[moveFrom - 1].Name} till {BankSystem.AllCustomers[index].Username}"));
                 }
+                else
+                {
+                    if (DateTime.Now <= SpecTime1)
+                    {
+                        timeUntilExe = SpecTime1 - DateTime.Now;
+                        time = SpecTime1;
+                    }
+                    else if (DateTime.Now <= SpecTime2)
+                    {
+                        timeUntilExe = SpecTime2 - DateTime.Now;
+                        time = SpecTime2;
+                    }
+                    else if (DateTime.Now <= SpecTime3)
+                    {
+                        timeUntilExe = SpecTime3 - DateTime.Now;
+                        time = SpecTime3;
+                    }
+                    else if (DateTime.Now <= SpecTime4)
+                    {
+                        timeUntilExe = SpecTime4 - DateTime.Now;
+                        time = SpecTime4;
+                    }
+                    Accounts[moveFrom - 1].Balance -= amount;
+                    Task.Delay(timeUntilExe).ContinueWith((x) => BankSystem.AllCustomers[index].Accounts[0].Balance += BankSystem.CurrencyConverter(Accounts[moveFrom - 1].Currency, BankSystem.AllCustomers[index].Accounts[0].Currency, amount));
+                    var now = DateTime.Now;
+                    Task.Delay(timeUntilExe).ContinueWith((x) => Log.Add($"\n{SpecTime1} \n{amount} {Accounts[moveFrom - 1].Currency} överfördes från {Accounts[moveFrom - 1].Name} till {BankSystem.AllCustomers[index].Username}"));
+                }
+                Console.Clear();
+                BankSystem.CenterColor("ÖVERFÖRING TILL ANNAN ANVÄNDARE\n", true, "Yellow");
+                BankSystem.CenterColor($"Överföring begärd.\n\n{amount} {Accounts[moveFrom - 1].Currency} överförs från {Accounts[moveFrom - 1].Name} till {BankSystem.AllCustomers[index].Username} klockan {time}.\n", false, "Green");
+                Log.Add($"\n{DateTime.Now} \nÖverföring begärd: {amount} {Accounts[moveFrom - 1].Currency} från {Accounts[moveFrom - 1].Name} till {BankSystem.AllCustomers[index].Username}");
+                BankSystem.Return();
+                return true;
             }
             else
             {
-                BankSystem.CenterColor("Användarnamn kunde ej hittas",false,"Red");
+                BankSystem.CenterColor("Användarnamn kunde ej hittas", false, "Red");
                 BankSystem.Return();
             }
             return false;

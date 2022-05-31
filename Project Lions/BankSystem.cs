@@ -506,106 +506,106 @@ namespace Project_Lions
         }
         public static void PrintLogo()
         {
-            string logo = System.IO.File.ReadAllText(@"C:\Users\ville\Source\Repos\Villegunnar\Project-Lions\Project Lions\Resources\TeamLionBankIncLogo.txt");
-            Random randy = new Random();
-            for (int i = 0; i <= 100; i++)
-            {
-                Console.SetCursorPosition(30, 5);
-                CenterColor($"LADDAR: {i}%",true);
-                int delayAmt = randy.Next(1, 11);
-                int delay = 0;
-                if (delayAmt != 10)
-                {
-                    delay = randy.Next(5, 51);
-                }
-                else
-                {
-                    delay = randy.Next(50, 301);
-                }
-                Thread.Sleep(delay);
-                Console.Clear();
-            }
-            foreach (char c in logo)
-            {
-                Console.Write(c);
-                if (c != ' ')
-                {
-                    int delayAmt = randy.Next(1, 11);
-                    int delay = 0;
-                    if (delayAmt != 10)
-                    {
-                        delay = randy.Next(1, 4);
-                    }
-                    else
-                    {
-                        delay = randy.Next(3, 13);
-                    }
-                    Thread.Sleep(delay);
-                }
-            }
-            {
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine(logo);
-                Thread.Sleep(80);
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.DarkCyan;
-                Console.WriteLine(logo);
-                Thread.Sleep(80);
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Blue;
-                Console.WriteLine(logo);
-                Thread.Sleep(80);
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.DarkBlue;
-                Console.WriteLine(logo);
-                Thread.Sleep(80);
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                Console.WriteLine(logo);
-                Thread.Sleep(80);
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Magenta;
-                Console.WriteLine(logo);
-                Thread.Sleep(80);
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(logo);
-                Thread.Sleep(80);
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.WriteLine(logo);
-                Thread.Sleep(80);
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.WriteLine(logo);
-                Thread.Sleep(80);
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine(logo);
-                Thread.Sleep(80);
-                Console.ResetColor();
-                Console.Clear();
-                Console.WriteLine(logo);
-                Console.SetCursorPosition(33, 37);
-                Console.WriteLine("LION BANK INC");
-                Console.SetCursorPosition(27, 38);
-                Console.WriteLine("Kings of the finance jungle");
-                Thread.Sleep(3000);
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Gray;
-                Console.WriteLine(logo);
-                Thread.Sleep(150);
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.WriteLine(logo);
-                Thread.Sleep(150);
-                Console.Clear();
-                Console.WriteLine(logo);
-                Thread.Sleep(150);
-                Console.Clear();
-                Thread.Sleep(400);
-            }
+            //string logo = System.IO.File.ReadAllText(@"C:\Users\ville\Source\Repos\Villegunnar\Project-Lions\Project Lions\Resources\TeamLionBankIncLogo.txt");
+            //Random randy = new Random();
+            //for (int i = 0; i <= 100; i++)
+            //{
+            //    Console.SetCursorPosition(30, 5);
+            //    CenterColor($"LADDAR: {i}%",true);
+            //    int delayAmt = randy.Next(1, 11);
+            //    int delay = 0;
+            //    if (delayAmt != 10)
+            //    {
+            //        delay = randy.Next(5, 51);
+            //    }
+            //    else
+            //    {
+            //        delay = randy.Next(50, 301);
+            //    }
+            //    Thread.Sleep(delay);
+            //    Console.Clear();
+            //}
+            //foreach (char c in logo)
+            //{
+            //    Console.Write(c);
+            //    if (c != ' ')
+            //    {
+            //        int delayAmt = randy.Next(1, 11);
+            //        int delay = 0;
+            //        if (delayAmt != 10)
+            //        {
+            //            delay = randy.Next(1, 4);
+            //        }
+            //        else
+            //        {
+            //            delay = randy.Next(3, 13);
+            //        }
+            //        Thread.Sleep(delay);
+            //    }
+            //}
+            //{
+            //    Console.Clear();
+            //    Console.ForegroundColor = ConsoleColor.Cyan;
+            //    Console.WriteLine(logo);
+            //    Thread.Sleep(80);
+            //    Console.Clear();
+            //    Console.ForegroundColor = ConsoleColor.DarkCyan;
+            //    Console.WriteLine(logo);
+            //    Thread.Sleep(80);
+            //    Console.Clear();
+            //    Console.ForegroundColor = ConsoleColor.Blue;
+            //    Console.WriteLine(logo);
+            //    Thread.Sleep(80);
+            //    Console.Clear();
+            //    Console.ForegroundColor = ConsoleColor.DarkBlue;
+            //    Console.WriteLine(logo);
+            //    Thread.Sleep(80);
+            //    Console.Clear();
+            //    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+            //    Console.WriteLine(logo);
+            //    Thread.Sleep(80);
+            //    Console.Clear();
+            //    Console.ForegroundColor = ConsoleColor.Magenta;
+            //    Console.WriteLine(logo);
+            //    Thread.Sleep(80);
+            //    Console.Clear();
+            //    Console.ForegroundColor = ConsoleColor.Red;
+            //    Console.WriteLine(logo);
+            //    Thread.Sleep(80);
+            //    Console.Clear();
+            //    Console.ForegroundColor = ConsoleColor.DarkRed;
+            //    Console.WriteLine(logo);
+            //    Thread.Sleep(80);
+            //    Console.Clear();
+            //    Console.ForegroundColor = ConsoleColor.DarkYellow;
+            //    Console.WriteLine(logo);
+            //    Thread.Sleep(80);
+            //    Console.Clear();
+            //    Console.ForegroundColor = ConsoleColor.Yellow;
+            //    Console.WriteLine(logo);
+            //    Thread.Sleep(80);
+            //    Console.ResetColor();
+            //    Console.Clear();
+            //    Console.WriteLine(logo);
+            //    Console.SetCursorPosition(33, 37);
+            //    Console.WriteLine("LION BANK INC");
+            //    Console.SetCursorPosition(27, 38);
+            //    Console.WriteLine("Kings of the finance jungle");
+            //    Thread.Sleep(3000);
+            //    Console.Clear();
+            //    Console.ForegroundColor = ConsoleColor.Gray;
+            //    Console.WriteLine(logo);
+            //    Thread.Sleep(150);
+            //    Console.Clear();
+            //    Console.ForegroundColor = ConsoleColor.DarkGray;
+            //    Console.WriteLine(logo);
+            //    Thread.Sleep(150);
+            //    Console.Clear();
+            //    Console.WriteLine(logo);
+            //    Thread.Sleep(150);
+            //    Console.Clear();
+            //    Thread.Sleep(400);
+            // }
         }
         public static void LoadingAnimation(string tempText = "", int tempSleepTime = 10)
         {   

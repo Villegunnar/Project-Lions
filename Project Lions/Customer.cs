@@ -237,33 +237,7 @@ namespace Project_Lions
                     var now = DateTime.Now;
                     Task.Delay(timeUntilExe).ContinueWith((x) => Log.Add($"\n{time} \n{amount} {Accounts[moveFrom - 1].Currency} överfördes från {Accounts[moveFrom - 1].Name} till {BankSystem.AllCustomers[index].Username}"));
                 }
-                else
-                {
-                    if (DateTime.Now <= SpecTime1)
-                    {
-                        timeUntilExe = SpecTime1 - DateTime.Now;
-                        time = SpecTime1;
-                    }
-                    else if (DateTime.Now <= SpecTime2)
-                    {
-                        timeUntilExe = SpecTime2 - DateTime.Now;
-                        time = SpecTime2;
-                    }
-                    else if (DateTime.Now <= SpecTime3)
-                    {
-                        timeUntilExe = SpecTime3 - DateTime.Now;
-                        time = SpecTime3;
-                    }
-                    else if (DateTime.Now <= SpecTime4)
-                    {
-                        timeUntilExe = SpecTime4 - DateTime.Now;
-                        time = SpecTime4;
-                    }
-                    Accounts[moveFrom - 1].Balance -= amount;
-                    Task.Delay(timeUntilExe).ContinueWith((x) => BankSystem.AllCustomers[index].Accounts[0].Balance += BankSystem.CurrencyConverter(Accounts[moveFrom - 1].Currency, BankSystem.AllCustomers[index].Accounts[0].Currency, amount));
-                    var now = DateTime.Now;
-                    Task.Delay(timeUntilExe).ContinueWith((x) => Log.Add($"\n{SpecTime1} \n{amount} {Accounts[moveFrom - 1].Currency} överfördes från {Accounts[moveFrom - 1].Name} till {BankSystem.AllCustomers[index].Username}"));
-                }
+                
                 Console.Clear();
                 BankSystem.CenterColor("ÖVERFÖRING TILL ANNAN ANVÄNDARE\n", true, "Yellow");
                 BankSystem.CenterColor($"Överföring begärd.\n\n{amount} {Accounts[moveFrom - 1].Currency} överförs från {Accounts[moveFrom - 1].Name} till {BankSystem.AllCustomers[index].Username} klockan {time}.\n", false, "Green");

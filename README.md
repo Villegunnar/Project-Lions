@@ -1,3 +1,25 @@
+# Unit testing of Lion Bank Inc
+
+###### Identifiera 3 delar av koden som du känner är mer affärskritiska (exempelvis överföring av pengar, insättning eller uttag av pengar osv.)
+   ###    *  Ta lån 
+
+##### Man kan ta lån med negativt värde, vilket gör att du ger banken pengar istället för att få ett lån. 
+
+ ###  * Ändra bankens rörliga som Admin 
+
+##### Admin kan ändra bankens rörliga ränta till negativa värden. 
+
+ ###  * Föra över pengar till andra användare 
+
+##### Det går att skicka pengar till sig själv vilket är en onödig funktion. 
+
+ 
+#
+#
+#
+
+
+
 
 
 # Lion Bank Inc, kings of the finance jungle 
